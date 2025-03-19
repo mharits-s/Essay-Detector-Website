@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DETEKSI.AI - Hasil Scan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts/dist/apexcharts.css">
+</head>
+<body class="bg-blue-100 min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="py-6 px-4 md:px-16 w-full flex flex-row items-center justify-center">
+        <div class="flex items-center gap-2">
+            <img src="{{ url_for('serve_public', filename='logo.svg') }}" alt="DETEKSI.AI Logo" class="h-8">
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 md:px-16 py-8 flex flex-col md:flex-row gap-8">
+        <!-- Left Panel - Document Content -->
+        <div class="bg-white rounded-xl border border-[#d9d9d9] shadow-lg w-full md:w-3/5">
+            <div class="border-b border-[#d9d9d9] p-6">
+                <h2 class="text-3xl font-bold tracking-wide">Hasil Analisis Teks</h2>
+            </div>
+            <div class="p-6">
+                <p class="text-base leading-8">
+                    {% for sentence in results.sentences %}
+                        {% if sentence.class == 'Human' %}
+                            <span class="bg-purple-100 text-purple-600 px-2 py-1 rounded">{{ sentence.sentence }}</span> 
+                        {% else %}
+                            <span class="bg-orange-100 text-orange-600 px-2 py-1 rounded">{{ sentence.sentence }}</span> 
+                        {% endif %}
+                    {% endfor %}
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Panel - Analysis Results -->
+        <div class="bg-white rounded-xl border border-[#d9d9d9] shadow-lg w-full md:w-2/5">
+            <div class="border-b border-[#d9d9d9] p-6 flex justify-between items-center">
+                <h2 class="text-3xl font-bold tracking-wide">Hasil Scan</h2>
+                <span class="text-base font-medium">Bahasa Indonesia</span>
+            </div>
+
+            <!-- Sentence Classification -->
+            <div class="border-b border-gray-300 p-6">
+                <h3 class="text-base font-medium mb-6">Hasil Klasifikasi Kalimat</h3>
+                <div class="flex items-center gap-6">
+                    <!-- Donut Chart -->
+                    <div id="hs-doughnut-chart" class="relative w-40 h-40 flex items-center justify-center"></div>
+                    <!-- Classification Report -->
+                    <div class="flex flex-col gap-2">
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            Hasil analisis tiap kalimat pada dokumen ini menunjukkan bahwa tingkat probabilitas dokumen dibuat oleh
+                        </p>
+                        <div id="dominantCategory" class="rounded-full px-3 py-2 inline-block">
+                            <div id="dominantCategoryText" class="text-xs font-bold"></div>
+                        </div>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            {% if results.statistics.human_percentage != 0 and results.statistics.ai_percentage != 0 %}
+                                Hasil analisis tiap kalimat pada dokumen ini menunjukkan bahwa tingkat probabilitas dokumen dibuat oleh
+                            {% endif %}
+                        </p>
+                        <p class="text-xs text-gray-600 leading-relaxed">
+                            {% if results.statistics.human_percentage != 0 and results.statistics.ai_percentage != 0 %}
+                                <span id="humanPercentage">{{ results.statistics.human_percentage | round }}</span>% Probabilitas Manusia, 
+                                <span id="aiPercentage">{{ results.statistics.ai_percentage | round }}</span>% Probabilitas AI
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {% if results.top_ai %}
+            <!-- AI Probability Sentences -->
+                <div class="border-b border-gray-300 p-6">
+                    <h3 class="text-base font-medium mb-6">Kalimat teratas dengan probabilitas AI</h3>
+                    <div class="flex flex-col gap-8">
+                        <div class="flex items-center gap-9">
+                            <div class="flex items-center gap-2">
+                                <div class="bg-orange-100 w-[16px] h-[16px] rounded-full"></div>
+                                <div class="bg-orange-300 w-[16px] h-[16px] rounded-full"></div>
+                                <div class="bg-orange-600 w-[16px] h-[16px] rounded-full"></div>
+                            </div>
+                            <span class="text-xs font-semibold text-gray-600">Kalimat AI</span>
+                        </div>
+                        {% for sentence in results.top_ai %}
+                        <div class="flex items-center gap-9">
+                            <div class="flex items-center gap-2">
+                                {% if sentence.probability * 100 <= 33 %}
+                                    <div class="bg-orange-100 w-[16px] h-[16px] rounded-full"></div>
+                                    <div class="bg-white border border-gray-300 w-[16px] h-[16px] rounded-full"></div>
+                                    <div class="bg-white border border-gray-300 w-[16px] h-[16px] rounded-full"></div>
+                                {% elif sentence.probability * 100 <= 66 %}
+                                    <div class="bg-white border border-gray-300 w-[16px] h-[16px] rounded-full"></div>
+                                    <div class="bg-orange-300 w-[16px] h-[16px] rounded-full"></div>
+                                    <div class="bg-white border border-gray-300 w-[16px] h-[16px] rounded-full"></div>
+                                {% else %}
+                                    <div class="bg-white border border-gray-300 w-[16px] h-[16px] rounded-full"></div>
+                                    <div class="bg-white border border-gray-300 w-[16px] h-[16px] rounded-full"></div>
+                                    <div class="bg-orange-600 w-[16px] h-[16px] rounded-full"></div>
+                                {% endif %}
+                            </div>
+                            <p class="text-xs text-gray-600">{{ sentence.sentence }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if results.top_human %}
+            <!-- Human Probability Sentences -->
+                <div class="border-b border-gray-300 p-6">
+                    <h3 class="text-base font-medium mb-6">Kalimat teratas dengan probabilitas Manusia</h3>
+                    <div class="flex flex-col gap-8">
+                        <div class="flex items-center gap-9">
+                            <div class="flex items-center gap-2">
+                                <div class="bg-purple-100 w-[16px] h-[16px] rounded-full"></div>
+                                <div class="bg-purple-300 w-[16px] h-[16px] rounded-full"></div>
+                                <div class="bg-purple-600 w-[16px] h-[16px] rounded-full"></div>
+                            </div>
+                            <span class="text-xs font-semibold text-gray-600">Kalimat Manusia</span>
+                        </div>
+                        {% for sentence in results.top_human %}
+                        <div class="flex items-center gap-9">
+                            <div class="flex items-center gap-2">
+                                {% if sentence.probability * 100 <= 33 %}
+                                    <div class="bg-purple-100 w-[16px] h-[16px] rounded-full"></div>
+                                    <div class="bg-white border border-gray-300 w-[16px] h-[16px] rounded-full"></div>
+                                    <div class="bg-white border border-gray-300 w-[16px] h-[16px] rounded-full"></div>
+                                {% elif sentence.probability * 100 <= 66 %}
+                                    <div class="bg-white border border-gray-300 w-[16px] h-[16px] rounded-full"></div>
+                                    <div class="bg-purple-300 w-[16px] h-[16px] rounded-full"></div>
+                                    <div class="bg-white border border-gray-300 w-[16px] h-[16px] rounded-full"></div>
+                                {% else %}
+                                    <div class="bg-white border border-gray-300 w-[16px] h-[16px] rounded-full"></div>
+                                    <div class="bg-white border border-gray-300 w-[16px] h-[16px] rounded-full"></div>
+                                    <div class="bg-purple-600 w-[16px] h-[16px] rounded-full"></div>
+                                {% endif %}
+                            </div>
+                            <p class="text-xs text-gray-600">{{ sentence.sentence }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <a href="/" class="bg-blue-500 text-white rounded-xl px-6 py-4 flex items-center gap-2 hover:bg-blue-700 transition w-48 mb-6 mx-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+        </svg>
+        <span class="text-base font-medium">Return Home</span>
+    </a>
+    
+
+    <!-- Footer -->
+    <footer class="bg-[#3a3a3a] text-white py-2 px-4 md:px-16 flex justify-between w-full">
+        <p class="text-base font-medium">© Copyright HRTS.Design, All Rights Reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let humanPercentage = {{ results.statistics.human_percentage }};
+            let aiPercentage = {{ results.statistics.ai_percentage }};
+    
+            // Membuat array berisi data persentase dan labelnya
+            let data = [
+                { label: "Manusia", value: humanPercentage, color: "#9747FF" },
+                { label: "AI", value: aiPercentage, color: "#FF9900" }
+            ];
+    
+            // Mengurutkan berdasarkan nilai terbesar
+            data.sort((a, b) => b.value - a.value);
+            data[1].color = "#D9D9D9";
+    
+            // Ekstrak kembali ke dalam array terpisah
+            let sortedSeries = data.map(item => item.value);
+            let sortedLabels = data.map(item => item.label);
+            let sortedColors = data.map(item => item.color);
+            let dominantCategory = sortedLabels[0]; // Kategori dengan persentase terbesar
+    
+            // Update teks kategori dominan
+            const dominantCategoryElement = document.getElementById('dominantCategory');
+            const dominantCategoryTextElement = document.getElementById('dominantCategoryText');
+            dominantCategoryTextElement.innerText = dominantCategory;
+    
+            // Atur warna dominan
+            if (dominantCategory === "Manusia") {
+                dominantCategoryElement.classList.add('bg-purple-200');
+                dominantCategoryTextElement.classList.add('text-purple-600');
+            } else {
+                dominantCategoryElement.classList.add('bg-orange-200');
+                dominantCategoryTextElement.classList.add('text-orange-600');
+            }
+    
+            // Inisialisasi Donut Chart
+            var options = {
+                chart: {
+                    height: 160,
+                    width: 160,
+                    type: 'donut',
+                    zoom: { enabled: false }
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '76%',
+                            labels: {
+                                show: false,
+                                total: {
+                                    show: true,
+                                    showAlways: true,
+                                    label: dominantCategory,
+                                    fontSize: '14px',
+                                    fontFamily: 'Plus Jakarta Sans, sans-serif',
+                                    fontWeight: 600,
+                                    color: '#3a3a3a',
+                                    formatter: function() {
+                                        return dominantCategory;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                series: sortedSeries, // Gunakan urutan baru
+                labels: sortedLabels, // Label sesuai urutan terbesar
+                colors: sortedColors, // Warna sesuai urutan terbesar
+                legend: { show: false },
+                dataLabels: { enabled: false },
+                stroke: { width: 0 },
+                grid: {
+                    padding: { top: 0, bottom: 0, left: 0, right: 0 }
+                },
+                tooltip: {
+                    enabled: true,
+                    y: {
+                        formatter: function(value) {
+                            return value + '%';
+                        }
+                    }
+                }
+            };
+    
+            var chart = new ApexCharts(document.querySelector("#hs-doughnut-chart"), options);
+            chart.render();
+        });
+    </script>    
+</body>
+</html>

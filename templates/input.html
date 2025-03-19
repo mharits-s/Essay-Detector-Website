@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DETEKSI.AI - Hasil Scan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+    <script>
+        function updateCharacterCount() {
+            const inputText = document.getElementById('inputText');
+            const charCount = document.getElementById('charCount');
+            const scanButton = document.getElementById('scanButton');
+            const charLimitMessage = document.getElementById('charLimitMessage');
+            const charLength = inputText.value.length;
+            
+            // Update character count display
+            charCount.textContent = `${charLength}/2000 karakter`;
+            
+            // Check if character count exceeds limit
+            if (charLength > 2000) {
+                scanButton.disabled = true;
+                scanButton.classList.add('opacity-50', 'cursor-not-allowed');
+                scanButton.classList.remove('hover:bg-[#2a8bba]');
+                charCount.classList.add('text-red-500', 'font-bold');
+                charLimitMessage.classList.remove('hidden');
+            } else {
+                scanButton.disabled = false;
+                scanButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                scanButton.classList.add('hover:bg-[#2a8bba]');
+                charCount.classList.remove('text-red-500', 'font-bold');
+                charLimitMessage.classList.add('hidden');
+            }
+        }
+        
+        function validateForm(event) {
+            const inputText = document.getElementById('inputText');
+            if (inputText.value.length > 2000) {
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans';
+        }
+    </style>
+</head>
+<body class="bg-white flex flex-col min-h-screen">
+
+    <header class="bg-white border-b border-neutral-200 py-6 px-4 md:px-16 w-full flex flex-row items-center justify-between shadow-md">
+        <div class="flex items-center gap-2">
+            <img src="{{ url_for('serve_public', filename='logo.svg') }}" alt="DETEKSI.AI Logo" class="h-8">
+        </div>
+        <nav class="flex gap-4 md:gap-6">
+            <a href="#" class="text-gray-800 text-base font-medium hover:text-blue-500 transition">About</a>
+            <a href="#" class="text-gray-800 text-base font-medium hover:text-blue-500 transition">Profile</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex flex-col md:flex-row justify-center items-center flex-grow px-4 md:px-16 py-24 gap-16 bg-blue-100">
+        <section class="flex flex-col items-start gap-6 w-full md:w-1/2">
+            <div>
+                <h2 class="text-[#1e455b] text-4xl md:text-5xl font-bold leading-tight">Esai Detektor</h2>
+                <p class="text-[#1e455b] text-base font-medium">Laman ini bertujuan untuk mendeteksi teks buatan AI</p>
+            </div>
+            
+            <!-- Collaboration Section -->
+            <div class="flex flex-col items-start gap-4">
+                <p class="text-[#1e455b] text-base font-medium">Collaboration with:</p>
+                <div class="flex gap-4 md:gap-6 items-center">  
+                    <img src="{{ url_for('serve_images', filename='primer-utama 1.png') }}" class="h-12" alt="Logo 1">
+                    <img src="{{ url_for('serve_images', filename='IF SBY.png') }}" class="h-12" alt="Logo 2">
+                    <img src="{{ url_for('serve_images', filename='Group.png') }}" class="h-6" alt="Logo 3">
+                </div>                
+            </div>
+        </section>
+        
+        <!-- Input Box -->
+        <section class="bg-white rounded-xl border border-[#d9d9d9] w-full md:w-[560px] shadow-lg">
+            <div class="border-b border-[#d9d9d9] flex justify-between py-4 px-6">
+                <button class="text-black rounded-full px-6 py-3 flex items-center gap-1.5 hover:bg-gray-300 transition">
+                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <path stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v9m-5 0H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2M8 9l4-5 4 5m1 8h.01"/>
+                    </svg>                      
+                    <span class="text-base font-medium">Unggah Dokumen</span>
+                </button>
+            </div>
+            <div class="relative overflow-hidden py-2"></div>
+                <form action="/output" method="post" onsubmit="return validateForm(event)">
+                    <textarea id="inputText" name="text_input" rows="9" class="w-full h-full order-none outline-none shadow-none px-6" placeholder="Masukkan teks yang ingin Anda pindai" oninput="updateCharacterCount()"></textarea>
+                    
+                    <div class="flex justify-between items-center py-4 px-6">
+                        <p id="charCount" class="text-black text-sm">0/2000 karakter</p>
+                        <p id="charLimitMessage" class="text-red-500 text-sm font-bold hidden">Karakter melebihi batas!</p>
+                        <button id="scanButton" type="submit" class="bg-[#36b5da] text-white rounded-xl px-6 py-3 flex items-center gap-2 hover:bg-[#2a8bba] transition">
+                            <span class="text-base font-medium">Scan</span>
+                            <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#3a3a3a] text-white py-2 px-4 md:px-16 flex justify-between w-full">
+        <p class="text-base font-medium">© Copyright HRTS.Design, All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

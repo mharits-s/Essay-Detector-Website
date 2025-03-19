@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classification Result</title>
+</head>
+<body>
+    <h1>Classification Result</h1>
+    <p>Total Sentences: {{ results['statistics']['total_sentences'] }}</p>
+    <p>Human Sentences: {{ results['statistics']['human_sentences'] }} ({{ results['statistics']['human_percentage'] }}%)</p>
+    <p>AI Sentences: {{ results['statistics']['ai_sentences'] }} ({{ results['statistics']['ai_percentage'] }}%)</p>
+    
+    <h2>Top AI Sentences:</h2>
+    <ul>
+        {% for sentence in results['top_ai'] %}
+            <li>{{ sentence['sentence'] }} ({{ sentence['probability'] * 100 }}%)</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Top Human Sentences:</h2>
+    <ul>
+        {% for sentence in results['top_human'] %}
+            <li>{{ sentence['sentence'] }} ({{ (1 - sentence['probability']) * 100 }}%)</li>
+        {% endfor %}
+    </ul>
+
+    <a href="/">Classify another text</a>
+</body>
+</html>
