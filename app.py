@@ -317,12 +317,6 @@ class TextClassifier:
         
         # Normalize stylometric features
         normalized_features = self.scaler.transform(style_features_df)
-        # print(self.reference_embeddings_1)
-        # if 'embeddings' not in self.reference_embeddings_1:
-        #     raise KeyError("The key 'embeddings' is missing in reference_embeddings_1.")
-
-        # Compute similarity scores
-        # 1. Similarity with Student (from Student_ChatGPT model)
         student_similarity = self.compute_similarity_max(
             embedding_1, 
             tf.convert_to_tensor(self.reference_embeddings_1['student']['embeddings'])
