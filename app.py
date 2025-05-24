@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 from IPython.display import display, HTML
 
 app = Flask(__name__)
-
 class TextClassifier:
     def __init__(self, model_dir='models'):
         """
