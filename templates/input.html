@@ -1,56 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DETEKSI.AI - Hasil Scan</title>
+    <link rel="icon" href="{{ url_for('serve_public', filename='favicon.svg') }}" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
-    <script>
-        function updateCharacterCount() {
-            const inputText = document.getElementById('inputText');
-            const charCount = document.getElementById('charCount');
-            const scanButton = document.getElementById('scanButton');
-            const charLimitMessage = document.getElementById('charLimitMessage');
-            const charLength = inputText.value.length;
-            
-            // Update character count display
-            charCount.textContent = `${charLength}/2000 karakter`;
-            
-            // Check if character count exceeds limit
-            if (charLength > 2000) {
-                scanButton.disabled = true;
-                scanButton.classList.add('opacity-50', 'cursor-not-allowed');
-                scanButton.classList.remove('hover:bg-[#2a8bba]');
-                charCount.classList.add('text-red-500', 'font-bold');
-                charLimitMessage.classList.remove('hidden');
-            } else {
-                scanButton.disabled = false;
-                scanButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                scanButton.classList.add('hover:bg-[#2a8bba]');
-                charCount.classList.remove('text-red-500', 'font-bold');
-                charLimitMessage.classList.add('hidden');
-            }
-        }
-        
-        function validateForm(event) {
-            const inputText = document.getElementById('inputText');
-            if (inputText.value.length > 2000) {
-                event.preventDefault();
-                return false;
-            }
-            return true;
-        }
-    </script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@500;700&display=swap"
+        rel="stylesheet">
+
     <style>
         body {
             font-family: 'Plus Jakarta Sans';
         }
+
+        .drop-zone {
+            border: 2px dashed #d9d9d9;
+            transition: all 0.3s ease;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .drop-zone.dragover {
+            border-color: #36b5da;
+            background-color: rgba(54, 181, 218, 0.05);
+        }
+
+        .file-input-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .file-input-container:hover .file-input-overlay {
+            opacity: 1;
+        }
+
+        .file-input-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(54, 181, 218, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .custom-textarea {
+            resize: none;
+            min-height: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .custom-textarea:focus {
+            box-shadow: 0 0 0 2px rgba(54, 181, 218, 0.2);
+        }
+
+        .file-preview {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .file-preview.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .remove-file-btn {
+            transition: all 0.2s ease;
+        }
+
+        .remove-file-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .custom-textarea.dragover {
+            border-color: #36b5da !important; /* Menimpa style lain jika ada */
+            box-shadow: 0 0 0 2px rgba(54, 181, 218, 0.3);
+        }
+
+        .custom-textarea:read-only {
+            background-color: #f3f4f6; /* Tailwind gray-100 */
+            cursor: default;
+        }
+        
+        /* Pastikan custom-textarea mengambil tinggi yang cukup */
+        .custom-textarea {
+            resize: none;
+            min-height: 200px; /* Sesuaikan dengan rows atau kebutuhan */
+            transition: all 0.3s ease;
+        }
+
+        .custom-textarea:focus {
+            box-shadow: 0 0 0 2px rgba(54, 181, 218, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .title-section {
+                text-align: center;
+                align-items: center;
+            }
+
+            .collaboration-section {
+                align-items: center;
+            }
+
+            .drop-zone {
+                min-height: 150px;
+                padding: 1rem;
+            }
+
+            .file-preview {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+
+            .file-preview .flex {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .remove-file-btn {
+                margin-top: 0.5rem;
+            }
+        }
     </style>
 </head>
+<div id="fullPageDropOverlay" class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 z-[9999] items-center justify-center p-4">
+    <div id="overlayDropZoneContent" class="bg-gray-700 text-white p-8 md:p-12 rounded-xl text-center border-2 border-dashed border-gray-500 w-full max-w-lg">
+        <svg class="w-16 h-16 mx-auto mb-6 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 5v9m-5 0H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2M8 9l4-5 4 5m1 8h.01"/>
+        </svg>
+        <p class="text-xl md:text-2xl font-semibold mb-2">Lepaskan file untuk diunggah</p>
+        <p class="text-sm md:text-base text-gray-300">Mendukung file .PDF atau .DOCX</p>
+    </div>
+</div>
 <body class="bg-white flex flex-col min-h-screen">
 
-    <header class="bg-white border-b border-neutral-200 py-6 px-4 md:px-16 w-full flex flex-row items-center justify-between shadow-md">
+    <header
+        class="bg-white border-b border-neutral-200 py-6 px-4 md:px-16 w-full flex flex-row items-center justify-between shadow-md">
         <div class="flex items-center gap-2">
             <img src="{{ url_for('serve_public', filename='logo.svg') }}" alt="DETEKSI.AI Logo" class="h-8">
         </div>
@@ -60,51 +165,91 @@
         </nav>
     </header>
 
+    <!-- Alert Component -->
+    <div id="alert" class="fixed top-5 right-5 md:right-5 left-5 md:left-auto p-4 bg-white rounded-xl shadow-lg flex items-center gap-3 z-50 transform translate-x-[120%] md:translate-x-[120%] transition-transform duration-300 ease-in-out">
+        <div class="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center text-amber-700">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+        </div>
+        <div class="flex-1">
+            <div id="alertTitle" class="font-semibold text-gray-800">Peringatan</div>
+            <div id="alertMessage" class="text-sm text-gray-600">Silakan unggah file atau masukkan teks terlebih dahulu.</div>
+        </div>
+        <button onclick="closeAlert()" class="text-gray-400 hover:text-gray-600 p-1 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+
     <!-- Main Content -->
-    <main class="flex flex-col md:flex-row justify-center items-center flex-grow px-4 md:px-16 py-24 gap-16 bg-blue-100">
-        <section class="flex flex-col items-start gap-6 w-full md:w-1/2">
+    <main
+        class="flex flex-col md:flex-row justify-center items-center flex-grow px-4 md:px-16 py-12 md:py-24 gap-8 md:gap-16 bg-blue-100 main-content">
+        <section class="flex flex-col items-start gap-6 w-full md:w-1/2 title-section">
             <div>
-                <h2 class="text-[#1e455b] text-4xl md:text-5xl font-bold leading-tight">Esai Detektor</h2>
-                <p class="text-[#1e455b] text-base font-medium">Laman ini bertujuan untuk mendeteksi teks buatan AI</p>
+                <h2 class="text-[#1e455b] text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">Esai Detektor</h2>
+                <p class="text-[#1e455b] text-sm md:text-base font-medium">Laman ini bertujuan untuk mendeteksi teks buatan AI</p>
             </div>
-            
+
             <!-- Collaboration Section -->
-            <div class="flex flex-col items-start gap-4">
-                <p class="text-[#1e455b] text-base font-medium">Collaboration with:</p>
-                <div class="flex gap-4 md:gap-6 items-center">  
-                    <img src="{{ url_for('serve_images', filename='primer-utama 1.png') }}" class="h-12" alt="Logo 1">
-                    <img src="{{ url_for('serve_images', filename='IF SBY.png') }}" class="h-12" alt="Logo 2">
-                    <img src="{{ url_for('serve_images', filename='Group.png') }}" class="h-6" alt="Logo 3">
-                </div>                
+            <div class="flex flex-col items-start gap-4 collaboration-section">
+                <p class="text-[#1e455b] text-sm md:text-base font-medium">Collaboration with:</p>
+                <div class="flex flex-wrap gap-4 md:gap-6 items-center justify-center">
+                    <img src="{{ url_for('serve_images', filename='primer-utama 1.png') }}" class="h-8 md:h-12" alt="Logo 1">
+                    <img src="{{ url_for('serve_images', filename='IF SBY.png') }}" class="h-8 md:h-12" alt="Logo 2">
+                    <img src="{{ url_for('serve_images', filename='Group.png') }}" class="h-4 md:h-6" alt="Logo 3">
+                </div>
             </div>
         </section>
-        
+
         <!-- Input Box -->
         <section class="bg-white rounded-xl border border-[#d9d9d9] w-full md:w-[560px] shadow-lg">
-            <div class="border-b border-[#d9d9d9] flex justify-between py-4 px-6">
-                <button class="text-black rounded-full px-6 py-3 flex items-center gap-1.5 hover:bg-gray-300 transition">
-                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <path stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v9m-5 0H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2M8 9l4-5 4 5m1 8h.01"/>
-                    </svg>                      
-                    <span class="text-base font-medium">Unggah Dokumen</span>
-                </button>
-            </div>
-            <div class="relative overflow-hidden py-2"></div>
-                <form action="/output" method="post" onsubmit="return validateForm(event)">
-                    <textarea id="inputText" name="text_input" rows="9" class="w-full h-full order-none outline-none shadow-none px-6" placeholder="Masukkan teks yang ingin Anda pindai" oninput="updateCharacterCount()"></textarea>
-                    
-                    <div class="flex justify-between items-center py-4 px-6">
-                        <p id="charCount" class="text-black text-sm">0/2000 karakter</p>
-                        <p id="charLimitMessage" class="text-red-500 text-sm font-bold hidden">Karakter melebihi batas!</p>
-                        <button id="scanButton" type="submit" class="bg-[#36b5da] text-white rounded-xl px-6 py-3 flex items-center gap-2 hover:bg-[#2a8bba] transition">
-                            <span class="text-base font-medium">Scan</span>
-                            <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/>
+            <div class="border-b border-[#d9d9d9] flex justify-between items-center py-4 px-6">
+                <div id="uploadAreaContent" class="w-full">
+                    <button id="uploadDocButton" class="text-black rounded-full px-6 py-3 flex items-center gap-1.5 hover:bg-gray-300 transition w-auto">
+                        <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <path stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v9m-5 0H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2M8 9l4-5 4 5m1 8h.01"/>
+                        </svg>
+                        <span class="text-base font-medium">Unggah Dokumen</span>
+                    </button>
+                    <div id="filePreviewInUploadArea" class="hidden flex items-center justify-between w-full">
+                        <div class="flex items-center gap-2 md:gap-3">
+                            <svg class="w-5 h-5 md:w-6 md:h-6 text-[#36b5da]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2Z"/>
+                            </svg>
+                            <span id="fileNameInUploadArea" class="text-sm md:text-base text-gray-700 font-medium truncate max-w-[200px] md:max-w-[350px]">NamaFilePanjangSekaliUntukTest.docx</span>
+                        </div>
+                        <button type="button" onclick="removeFile()" class="remove-file-btn text-gray-500 hover:text-red-500 p-1">
+                            <svg class="w-4 h-4 md:w-5 md:h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
                         </button>
                     </div>
-                </form>
+                </div>
+                <input type="file" id="fileInput" accept=".pdf,.docx" class="hidden" onchange="handleFileSelect(event)">
             </div>
+            <form action="/output" method="post" onsubmit="return validateForm(event)">
+                <textarea 
+                    id="inputText" 
+                    name="text_input" 
+                    rows="9" 
+                    class="custom-textarea w-full order-none outline-none shadow-none px-6 py-4"  placeholder="Drag & Drop file .pdf atau .docx, tempel teks, atau klik 'Unggah Dokumen' di atas..."
+                    oninput="updateCharacterCount()"
+                ></textarea>
+                
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-0 mt-0 py-4 px-6"> <div class="flex items-center gap-2">
+                        <p id="charCount" class="text-xs md:text-sm text-gray-600">0/5000 karakter</p>
+                        <p id="charLimitMessage" class="text-xs md:text-sm text-red-500 font-bold hidden">Karakter melebihi batas!</p>
+                    </div>
+                    <button id="scanButton" type="submit" class="w-full md:w-auto bg-[#36b5da] text-white rounded-xl px-4 md:px-6 py-2 md:py-3 flex items-center justify-center gap-2 hover:bg-[#2a8bba] transition disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span class="text-sm md:text-base font-medium">Scan</span>
+                        <svg class="w-5 h-5 md:w-6 md:h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
         </section>
     </main>
 
@@ -112,5 +257,243 @@
     <footer class="bg-[#3a3a3a] text-white py-2 px-4 md:px-16 flex justify-between w-full">
         <p class="text-base font-medium">© Copyright HRTS.Design, All Rights Reserved.</p>
     </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // Cache DOM Elements
+        const inputText = document.getElementById('inputText');
+        const charCount = document.getElementById('charCount');
+        const scanButton = document.getElementById('scanButton');
+        const charLimitMessage = document.getElementById('charLimitMessage');
+        const alertBox = document.getElementById('alert');
+        const alertTitle = document.getElementById('alertTitle');
+        const alertMessage = document.getElementById('alertMessage');
+        
+        const uploadDocButton = document.getElementById('uploadDocButton');
+        const fileInput = document.getElementById('fileInput');
+        const filePreviewInUploadArea = document.getElementById('filePreviewInUploadArea');
+        const fileNameInUploadArea = document.getElementById('fileNameInUploadArea');
+
+        // Untuk Full Page Overlay Dropzone
+        const fullPageDropOverlay = document.getElementById('fullPageDropOverlay');
+        let windowDragCounter = 0; // Counter untuk event dragenter/dragleave di window
+
+        // Placeholder asli tidak lagi diubah secara dinamis saat drag di textarea
+        // const originalPlaceholder = inputText ? inputText.placeholder : ''; 
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCharacterCount(); // Initial call
+
+            if (uploadDocButton) {
+                uploadDocButton.addEventListener('click', () => {
+                    fileInput.click(); 
+                });
+            }
+
+            // --- Menghilangkan event listener drag khusus untuk textarea ---
+            // Logika ini sekarang ditangani oleh overlay layar penuh.
+            // if (inputText) {
+            //     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            //         inputText.removeEventListener(eventName, preventDefaults, false);
+            //     });
+            //     inputText.removeEventListener('dragenter', handleInputTextDragEnter);
+            //     inputText.removeEventListener('dragleave', handleInputTextDragLeave);
+            //     inputText.removeEventListener('drop', handleDropOnTextarea);
+            // }
+        });
+
+        function preventDefaults(e) {
+            if (e && typeof e.preventDefault === 'function') {
+                e.preventDefault();
+            }
+            if (e && typeof e.stopPropagation === 'function') {
+                e.stopPropagation();
+            }
+        }
+
+        // --- Event Listeners untuk Drag di Seluruh Window ---
+        window.addEventListener('dragenter', function(e) {
+            if (e.dataTransfer && Array.from(e.dataTransfer.types).includes('Files')) {
+                preventDefaults(e); // Penting untuk dragenter juga
+                windowDragCounter++;
+                if (fullPageDropOverlay.classList.contains('hidden')) {
+                    fullPageDropOverlay.classList.remove('hidden');
+                    fullPageDropOverlay.classList.add('flex'); // Menggunakan flex untuk centering
+                }
+            }
+        }, false);
+
+        window.addEventListener('dragover', function(e) {
+            if (e.dataTransfer && Array.from(e.dataTransfer.types).includes('Files')) {
+                preventDefaults(e); // Sangat penting untuk mengizinkan drop
+                // Pastikan overlay tetap terlihat jika dragover terjadi
+                if (fullPageDropOverlay.classList.contains('hidden')) {
+                    fullPageDropOverlay.classList.remove('hidden');
+                    fullPageDropOverlay.classList.add('flex');
+                     if(windowDragCounter === 0) windowDragCounter++; // Jaga-jaga jika dragenter terlewat
+                }
+            }
+        }, false);
+
+        window.addEventListener('dragleave', function(e) {
+            // Hanya proses jika event ini berhubungan dengan file drag
+             if (e.dataTransfer && Array.from(e.dataTransfer.types).includes('Files')) {
+                // Periksa apakah mouse benar-benar meninggalkan window
+                // atau hanya berpindah antar elemen di dalam window.
+                // e.relatedTarget null berarti mouse keluar dari window.
+                if (e.relatedTarget === null || !document.documentElement.contains(e.relatedTarget)) {
+                     windowDragCounter--;
+                } else {
+                    // Jika mouse masih di dalam window, tapi keluar dari elemen tertentu.
+                    // Untuk overlay fullscreen, kita bisa lebih agresif atau mengandalkan counter.
+                    // Untuk kasus ini, kita decrement jika bukan drop target utama.
+                    if(e.target !== fullPageDropOverlay && !fullPageDropOverlay.contains(e.target)){
+                         windowDragCounter--;
+                    }
+                }
+
+                if (windowDragCounter <= 0) {
+                    windowDragCounter = 0; 
+                    fullPageDropOverlay.classList.add('hidden');
+                    fullPageDropOverlay.classList.remove('flex');
+                }
+            }
+        }, false);
+
+        window.addEventListener('drop', function(e) {
+            preventDefaults(e);
+            windowDragCounter = 0; 
+            fullPageDropOverlay.classList.add('hidden');
+            fullPageDropOverlay.classList.remove('flex');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files; // Untuk konsistensi dengan logika removeFile
+                processFile(files[0]);
+            }
+        }, false);
+
+
+        // Fungsi inti lainnya (updateCharacterCount, showAlert, closeAlert, validateForm) tetap sama
+        function updateCharacterCount() {
+            const charLength = inputText.value.length;
+            charCount.textContent = `${charLength}/5000 karakter`;
+
+            charLimitMessage.classList.add('hidden');
+            charCount.classList.remove('text-red-500', 'font-bold');
+            scanButton.disabled = false;
+            scanButton.classList.remove('opacity-50', 'cursor-not-allowed', 'hover:bg-[#2a8bba]');
+            scanButton.classList.add('hover:bg-[#2a8bba]');
+
+
+            if (charLength > 5000 || charLength === 0) {
+                scanButton.disabled = true;
+                scanButton.classList.add('opacity-50', 'cursor-not-allowed');
+                scanButton.classList.remove('hover:bg-[#2a8bba]');
+                if (charLength > 5000) {
+                    charCount.classList.add('text-red-500', 'font-bold');
+                    charLimitMessage.classList.remove('hidden');
+                }
+            }
+        }
+
+        function showAlert(title, message) {
+            alertTitle.textContent = title;
+            alertMessage.textContent = message;
+            alertBox.classList.remove('translate-x-[120%]', 'md:translate-x-[120%]');
+            alertBox.classList.add('translate-x-0', 'md:translate-x-0');
+            setTimeout(closeAlert, 5000);
+        }
+
+        function closeAlert() {
+            alertBox.classList.remove('translate-x-0', 'md:translate-x-0');
+            alertBox.classList.add('translate-x-[120%]', 'md:translate-x-[120%]');
+        }
+
+        function validateForm(event) {
+            if (inputText.value.length === 0) {
+                event.preventDefault();
+                showAlert('Peringatan', 'Silakan unggah file atau masukkan teks terlebih dahulu.');
+                return false;
+            }
+            if (inputText.value.length > 5000) {
+                event.preventDefault();
+                showAlert('Peringatan', 'Teks melebihi batas 5000 karakter.');
+                return false;
+            }
+            return true;
+        }
+        
+        // Fungsi ini dipanggil ketika file dipilih melalui dialog file (klik tombol)
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                processFile(file);
+            }
+        }
+
+        // Fungsi processFile tetap sama, menangani logika ekstraksi teks
+        async function processFile(file) {
+            if (!file) return;
+
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            let text = '';
+
+            try {
+                if (fileExtension === 'pdf') {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        text += textContent.items.map(item => item.str).join(' ') + '\n';
+                    }
+                } else if (fileExtension === 'docx') {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const result = await mammoth.extractRawText({ arrayBuffer });
+                    text = result.value;
+                } else {
+                    showAlert('Format Tidak Didukung', 'Gunakan file PDF atau DOCX.');
+                    fileInput.value = ''; 
+                    return;
+                }
+
+                inputText.value = text;
+                inputText.readOnly = true; 
+
+                if (fileNameInUploadArea && uploadDocButton && filePreviewInUploadArea) {
+                    fileNameInUploadArea.textContent = file.name;
+                    uploadDocButton.classList.add('hidden');
+                    filePreviewInUploadArea.classList.remove('hidden');
+                    filePreviewInUploadArea.classList.add('flex'); 
+                }
+                updateCharacterCount();
+
+            } catch (error) {
+                console.error('Error reading file:', error);
+                showAlert('Kesalahan Membaca File', 'Terjadi kesalahan saat membaca file. Silakan coba lagi.');
+                removeFile(); 
+            }
+        }
+
+        // Fungsi removeFile tetap sama
+        function removeFile() {
+            fileInput.value = ''; 
+            inputText.value = '';
+            inputText.readOnly = false; 
+            // inputText.placeholder = originalPlaceholder; // Placeholder textarea tidak diubah lagi
+            
+            if (uploadDocButton && filePreviewInUploadArea && fileNameInUploadArea) {
+                uploadDocButton.classList.remove('hidden');
+                filePreviewInUploadArea.classList.add('hidden');
+                filePreviewInUploadArea.classList.remove('flex');
+                fileNameInUploadArea.textContent = '';
+            }
+            updateCharacterCount();
+        }
+    </script>
 </body>
+
 </html>

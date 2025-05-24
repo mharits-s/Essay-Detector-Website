@@ -11,14 +11,20 @@
 </head>
 <body class="bg-blue-100 min-h-screen flex flex-col">
     <!-- Header -->
-    <header class="py-6 px-4 md:px-16 w-full flex flex-row items-center justify-center">
-        <div class="flex items-center gap-2">
-            <img src="{{ url_for('serve_public', filename='logo.svg') }}" alt="DETEKSI.AI Logo" class="h-8">
+    <header class="flex-grow container mx-auto py-8 px-4 md:px-16 flex flex-row md:flex-row gap-8 justify-between">
+        <div class="flex items-center justify-center">
+            <img src="{{ url_for('serve_public', filename='logo.svg') }}" alt="DETEKSI.AI Logo" class="h-10">
         </div>
+        <a href="/" class="bg-blue-500 text-white rounded-xl px-6 py-4 flex items-center gap-2 hover:bg-blue-700 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+            </svg>
+            <span class="text-base font-medium">Return Home</span>
+        </a>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow container mx-auto px-4 md:px-16 py-8 flex flex-col md:flex-row gap-8">
+    <main class="flex-grow container mx-auto py-8 px-4 md:px-16 flex flex-col md:flex-row gap-8">
         <!-- Left Panel - Document Content -->
         <div class="bg-white rounded-xl border border-[#d9d9d9] shadow-lg w-full md:w-3/5">
             <div class="border-b border-[#d9d9d9] p-6">
@@ -55,8 +61,8 @@
                         <p class="text-xs text-gray-600 leading-relaxed">
                             Hasil analisis tiap kalimat pada dokumen ini menunjukkan bahwa tingkat probabilitas dokumen dibuat oleh
                         </p>
-                        <div id="dominantCategory" class="rounded-full px-3 py-2 inline-block">
-                            <div id="dominantCategoryText" class="text-xs font-bold"></div>
+                        <div id="dominantCategory" class="rounded-full px-4 py-2 inline-flex w-fit">
+                            <div id="dominantCategoryText" class="text-sm font-bold"></div>
                         </div>
                         <p class="text-xs text-gray-600 leading-relaxed">
                             {% if results.statistics.human_percentage != 0 and results.statistics.ai_percentage != 0 %}
@@ -149,12 +155,6 @@
         </div>
     </main>
 
-    <a href="/" class="bg-blue-500 text-white rounded-xl px-6 py-4 flex items-center gap-2 hover:bg-blue-700 transition w-48 mb-6 mx-auto">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-        </svg>
-        <span class="text-base font-medium">Return Home</span>
-    </a>
     
 
     <!-- Footer -->
@@ -177,7 +177,9 @@
     
             // Mengurutkan berdasarkan nilai terbesar
             data.sort((a, b) => b.value - a.value);
-            data[1].color = "#D9D9D9";
+            data.forEach((item, index) => {
+                if(index !== 0) item.color = "#D9D9D9";
+            });
     
             // Ekstrak kembali ke dalam array terpisah
             let sortedSeries = data.map(item => item.value);
@@ -202,38 +204,76 @@
             // Inisialisasi Donut Chart
             var options = {
                 chart: {
-                    height: 160,
-                    width: 160,
+                    height: 180,
+                    width: 180,
                     type: 'donut',
                     zoom: { enabled: false }
                 },
                 plotOptions: {
                     pie: {
                         donut: {
-                            size: '76%',
                             labels: {
-                                show: false,
-                                total: {
+                                show: true,
+                                name: {
                                     show: true,
-                                    showAlways: true,
-                                    label: dominantCategory,
                                     fontSize: '14px',
                                     fontFamily: 'Plus Jakarta Sans, sans-serif',
                                     fontWeight: 600,
                                     color: '#3a3a3a',
-                                    formatter: function() {
-                                        return dominantCategory;
+                                    offsetY: -10
+                                },
+                                value: {
+                                    show: true,
+                                    fontSize: '20px',
+                                    fontFamily: 'Plus Jakarta Sans, sans-serif',
+                                    fontWeight: 700,
+                                    color: '#3a3a3a',
+                                    formatter: function(val) {
+                                        return val.toFixed(1) + '%';
+                                    }
+                                },
+                                total: {
+                                    show: true,
+                                    label: '',
+                                    fontSize: '14px',
+                                    fontFamily: 'Plus Jakarta Sans, sans-serif',
+                                    fontWeight: 600,
+                                    color: '#3a3a3a',
+                                    formatter: function(w) {
+                                        const max = Math.max(humanPercentage, aiPercentage);
+                                        const color = max === humanPercentage ? "#9747FF" : "#000";
+                                        
+                                        setTimeout(() => {
+                                            const el = document.querySelector('.apexcharts-datalabel-label');
+                                            if(el) {
+                                                el.style.color = color;
+                                                el.style.fontWeight = '700';
+                                            }
+                                        }, 10);
+                                        
+                                        return Math.round(max) + '%';
                                     }
                                 }
                             }
                         }
                     }
                 },
-                series: sortedSeries, // Gunakan urutan baru
-                labels: sortedLabels, // Label sesuai urutan terbesar
-                colors: sortedColors, // Warna sesuai urutan terbesar
+                series: sortedSeries,
+                labels: sortedLabels,
+                colors: sortedColors,
                 legend: { show: false },
-                dataLabels: { enabled: false },
+                dataLabels: {
+                    enabled: false,
+                    formatter: function(val) {
+                        return val.toFixed(1) + '%';
+                    },
+                    style: {
+                        fontSize: '14px',
+                        fontFamily: 'Plus Jakarta Sans, sans-serif',
+                        fontWeight: 600,
+                        colors: ['#3a3a3a']
+                    }
+                },
                 stroke: { width: 0 },
                 grid: {
                     padding: { top: 0, bottom: 0, left: 0, right: 0 }
@@ -242,7 +282,7 @@
                     enabled: true,
                     y: {
                         formatter: function(value) {
-                            return value + '%';
+                            return value.toFixed(1) + '%';
                         }
                     }
                 }
@@ -251,6 +291,6 @@
             var chart = new ApexCharts(document.querySelector("#hs-doughnut-chart"), options);
             chart.render();
         });
-    </script>    
+    </script>     
 </body>
 </html>
