@@ -646,7 +646,7 @@ def serve_images(filename):
 @app.route('/')
 def home():
     logger.info("Home page accessed")
-    return render_template('input.html')
+    return render_template('input_final.html')
 
 # Initialize classifier with error handling
 classifier = None
@@ -665,7 +665,7 @@ def classify():
         results = classifier.classify_text(text_input)
         return render_template('output_final.html', results=results, original_text=text_input)
     except Exception as e:
-        return render_template('error.html', error_message=str(e))
+        return render_template('error.html', error_message=str(e)), 500
 
 if __name__ == '__main__':
     logger.info("Starting Flask application...")
