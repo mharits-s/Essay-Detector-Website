@@ -13,11 +13,6 @@
      conda activate <your-environment-name>
      ```
 
-4. **Download nltk to local:**
-     ```bash
-     python script.py
-     ```
-
 4. **Run the application:**
      ```bash
      python app.py
