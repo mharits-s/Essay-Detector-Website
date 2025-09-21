@@ -61,10 +61,10 @@
                     <div id="dominantCategoryPara" class="rounded-full px-4 py-2 inline-flex w-fit">
                         <div id="dominantCategoryParagraph" class="text-sm font-bold"></div>
                     </div>
-                    <p class="text-xs text-gray-600 leading-relaxed">
+                    <!-- <p class="text-xs text-gray-600 leading-relaxed">
                         <span id="humanPercentagePara">{{ results.statistics.paragraph_human_percentage | round }}</span>% Probabilitas Manusia, 
                         <span id="aiPercentagePara">{{ results.statistics.paragraph_ai_percentage | round }}</span>% Probabilitas AI
-                    </p>
+                    </p> -->
                     <div class="flex gap-4 text-xs text-gray-600">
                         <span>Total paragraf: {{ results.statistics.total_paragraphs }}</span>
                         <span>Paragraf AI: {{ results.statistics.ai_paragraphs }}</span>
@@ -93,6 +93,8 @@
                         </p>
                         <div class="flex gap-4 text-xs text-gray-600">
                             <span>Total kalimat: {{ results.statistics.total_sentences }}</span>
+                            <span>Kalimat AI: {{ results.statistics.ai_sentences }}</span>
+                            <span>Kalimat Manusia: {{ results.statistics.human_sentences }}</span>
                         </div>
                     </div>
                 </div>

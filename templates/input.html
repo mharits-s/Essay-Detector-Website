@@ -160,8 +160,7 @@
             <img src="{{ url_for('serve_public', filename='logo.svg') }}" alt="DETEKSI.AI Logo" class="h-8">
         </div>
         <nav class="flex gap-4 md:gap-6">
-            <a href="#" class="text-gray-800 text-base font-medium hover:text-blue-500 transition">About</a>
-            <a href="#" class="text-gray-800 text-base font-medium hover:text-blue-500 transition">Profile</a>
+            
         </nav>
     </header>
 
@@ -198,7 +197,6 @@
                 <div class="flex flex-wrap gap-4 md:gap-6 items-center justify-center">
                     <img src="{{ url_for('serve_images', filename='primer-utama 1.png') }}" class="h-8 md:h-12" alt="Logo 1">
                     <img src="{{ url_for('serve_images', filename='IF SBY.png') }}" class="h-8 md:h-12" alt="Logo 2">
-                    <img src="{{ url_for('serve_images', filename='Group.png') }}" class="h-4 md:h-6" alt="Logo 3">
                 </div>
             </div>
         </section>
@@ -239,7 +237,7 @@
                 ></textarea>
                 
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-0 mt-0 py-4 px-6"> <div class="flex items-center gap-2">
-                        <p id="charCount" class="text-xs md:text-sm text-gray-600">0/5000 karakter</p>
+                        <p id="charCount" class="text-xs md:text-sm text-gray-600">0/10000 karakter</p>
                         <p id="charLimitMessage" class="text-xs md:text-sm text-red-500 font-bold hidden">Karakter melebihi batas!</p>
                     </div>
                     <button id="scanButton" type="submit" class="w-full md:w-auto bg-[#36b5da] text-white rounded-xl px-4 md:px-6 py-2 md:py-3 flex items-center justify-center gap-2 hover:bg-[#2a8bba] transition disabled:opacity-50 disabled:cursor-not-allowed">
@@ -291,17 +289,6 @@
                     fileInput.click(); 
                 });
             }
-
-            // --- Menghilangkan event listener drag khusus untuk textarea ---
-            // Logika ini sekarang ditangani oleh overlay layar penuh.
-            // if (inputText) {
-            //     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            //         inputText.removeEventListener(eventName, preventDefaults, false);
-            //     });
-            //     inputText.removeEventListener('dragenter', handleInputTextDragEnter);
-            //     inputText.removeEventListener('dragleave', handleInputTextDragLeave);
-            //     inputText.removeEventListener('drop', handleDropOnTextarea);
-            // }
         });
 
         function preventDefaults(e) {
@@ -313,42 +300,33 @@
             }
         }
 
-        // --- Event Listeners untuk Drag di Seluruh Window ---
         window.addEventListener('dragenter', function(e) {
             if (e.dataTransfer && Array.from(e.dataTransfer.types).includes('Files')) {
-                preventDefaults(e); // Penting untuk dragenter juga
+                preventDefaults(e); 
                 windowDragCounter++;
                 if (fullPageDropOverlay.classList.contains('hidden')) {
                     fullPageDropOverlay.classList.remove('hidden');
-                    fullPageDropOverlay.classList.add('flex'); // Menggunakan flex untuk centering
+                    fullPageDropOverlay.classList.add('flex'); 
                 }
             }
         }, false);
 
         window.addEventListener('dragover', function(e) {
             if (e.dataTransfer && Array.from(e.dataTransfer.types).includes('Files')) {
-                preventDefaults(e); // Sangat penting untuk mengizinkan drop
-                // Pastikan overlay tetap terlihat jika dragover terjadi
+                preventDefaults(e); 
                 if (fullPageDropOverlay.classList.contains('hidden')) {
                     fullPageDropOverlay.classList.remove('hidden');
                     fullPageDropOverlay.classList.add('flex');
-                     if(windowDragCounter === 0) windowDragCounter++; // Jaga-jaga jika dragenter terlewat
+                     if(windowDragCounter === 0) windowDragCounter++; 
                 }
             }
         }, false);
 
         window.addEventListener('dragleave', function(e) {
-            // Hanya proses jika event ini berhubungan dengan file drag
              if (e.dataTransfer && Array.from(e.dataTransfer.types).includes('Files')) {
-                // Periksa apakah mouse benar-benar meninggalkan window
-                // atau hanya berpindah antar elemen di dalam window.
-                // e.relatedTarget null berarti mouse keluar dari window.
                 if (e.relatedTarget === null || !document.documentElement.contains(e.relatedTarget)) {
                      windowDragCounter--;
                 } else {
-                    // Jika mouse masih di dalam window, tapi keluar dari elemen tertentu.
-                    // Untuk overlay fullscreen, kita bisa lebih agresif atau mengandalkan counter.
-                    // Untuk kasus ini, kita decrement jika bukan drop target utama.
                     if(e.target !== fullPageDropOverlay && !fullPageDropOverlay.contains(e.target)){
                          windowDragCounter--;
                     }
@@ -370,16 +348,14 @@
 
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                fileInput.files = files; // Untuk konsistensi dengan logika removeFile
+                fileInput.files = files;
                 processFile(files[0]);
             }
         }, false);
 
-
-        // Fungsi inti lainnya (updateCharacterCount, showAlert, closeAlert, validateForm) tetap sama
         function updateCharacterCount() {
             const charLength = inputText.value.length;
-            charCount.textContent = `${charLength}/5000 karakter`;
+            charCount.textContent = `${charLength}/10000 karakter`;
 
             charLimitMessage.classList.add('hidden');
             charCount.classList.remove('text-red-500', 'font-bold');
@@ -388,11 +364,11 @@
             scanButton.classList.add('hover:bg-[#2a8bba]');
 
 
-            if (charLength > 5000 || charLength === 0) {
+            if (charLength > 10000 || charLength === 0) {
                 scanButton.disabled = true;
                 scanButton.classList.add('opacity-50', 'cursor-not-allowed');
                 scanButton.classList.remove('hover:bg-[#2a8bba]');
-                if (charLength > 5000) {
+                if (charLength > 10000) {
                     charCount.classList.add('text-red-500', 'font-bold');
                     charLimitMessage.classList.remove('hidden');
                 }
@@ -404,7 +380,7 @@
             alertMessage.textContent = message;
             alertBox.classList.remove('translate-x-[120%]', 'md:translate-x-[120%]');
             alertBox.classList.add('translate-x-0', 'md:translate-x-0');
-            setTimeout(closeAlert, 5000);
+            setTimeout(closeAlert, 10000);
         }
 
         function closeAlert() {
@@ -418,15 +394,14 @@
                 showAlert('Peringatan', 'Silakan unggah file atau masukkan teks terlebih dahulu.');
                 return false;
             }
-            if (inputText.value.length > 5000) {
+            if (inputText.value.length > 10000) {
                 event.preventDefault();
-                showAlert('Peringatan', 'Teks melebihi batas 5000 karakter.');
+                showAlert('Peringatan', 'Teks melebihi batas 10000 karakter.');
                 return false;
             }
             return true;
         }
         
-        // Fungsi ini dipanggil ketika file dipilih melalui dialog file (klik tombol)
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file) {
@@ -434,56 +409,104 @@
             }
         }
 
-        // Fungsi processFile tetap sama, menangani logika ekstraksi teks
         async function processFile(file) {
             if (!file) return;
-
+            
             const fileExtension = file.name.split('.').pop().toLowerCase();
             let text = '';
-
+            
             try {
                 if (fileExtension === 'pdf') {
                     const arrayBuffer = await file.arrayBuffer();
                     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    
                     for (let i = 1; i <= pdf.numPages; i++) {
                         const page = await pdf.getPage(i);
                         const textContent = await page.getTextContent();
-                        text += textContent.items.map(item => item.str).join(' ') + '\n';
+                        
+                        // Preserve line breaks by checking item positions
+                        let pageText = '';
+                        let lastY = null;
+                        
+                        textContent.items.forEach((item, index) => {
+                            // If this is a new line (different Y position), add line break
+                            if (lastY !== null && Math.abs(item.transform[5] - lastY) > 5) {
+                                pageText += '\n';
+                            }
+                            
+                            pageText += item.str;
+                            
+                            // Add space if next item is on same line but separate
+                            if (index < textContent.items.length - 1) {
+                                const nextItem = textContent.items[index + 1];
+                                if (Math.abs(nextItem.transform[5] - item.transform[5]) <= 5) {
+                                    // Same line, check if we need space
+                                    const currentEndX = item.transform[4] + item.width;
+                                    const nextStartX = nextItem.transform[4];
+                                    if (nextStartX - currentEndX > 2) {
+                                        pageText += ' ';
+                                    }
+                                }
+                            }
+                            
+                            lastY = item.transform[5];
+                        });
+                        
+                        text += pageText + '\n\n'; // Add page break
                     }
                 } else if (fileExtension === 'docx') {
                     const arrayBuffer = await file.arrayBuffer();
-                    const result = await mammoth.extractRawText({ arrayBuffer });
-                    text = result.value;
+                    // Use convertToHtml instead of extractRawText to preserve formatting
+                    const result = await mammoth.convertToHtml({ arrayBuffer });
+                    
+                    // Convert HTML to text while preserving line breaks
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = result.value;
+                    
+                    // Replace <p>, <br>, and <div> tags with line breaks
+                    tempDiv.innerHTML = tempDiv.innerHTML
+                        .replace(/<p[^>]*>/gi, '')
+                        .replace(/<\/p>/gi, '\n')
+                        .replace(/<br[^>]*>/gi, '\n')
+                        .replace(/<div[^>]*>/gi, '')
+                        .replace(/<\/div>/gi, '\n')
+                        .replace(/<li[^>]*>/gi, '• ')
+                        .replace(/<\/li>/gi, '\n');
+                    
+                    text = tempDiv.textContent || tempDiv.innerText || '';
+                    
+                    // Clean up multiple consecutive line breaks
+                    text = text.replace(/\n{3,}/g, '\n\n');
                 } else {
                     showAlert('Format Tidak Didukung', 'Gunakan file PDF atau DOCX.');
-                    fileInput.value = ''; 
+                    fileInput.value = '';
                     return;
                 }
-
-                inputText.value = text;
-                inputText.readOnly = true; 
-
+                
+                // Set the text while preserving line breaks
+                inputText.value = text.trim();
+                inputText.readOnly = true;
+                
                 if (fileNameInUploadArea && uploadDocButton && filePreviewInUploadArea) {
                     fileNameInUploadArea.textContent = file.name;
                     uploadDocButton.classList.add('hidden');
                     filePreviewInUploadArea.classList.remove('hidden');
-                    filePreviewInUploadArea.classList.add('flex'); 
+                    filePreviewInUploadArea.classList.add('flex');
                 }
+                
                 updateCharacterCount();
-
+                
             } catch (error) {
-                console.error('Error reading file:', error);
-                showAlert('Kesalahan Membaca File', 'Terjadi kesalahan saat membaca file. Silakan coba lagi.');
-                removeFile(); 
+                console.error('Error processing file:', error);
+                showAlert('Error', 'Terjadi kesalahan saat memproses file.');
+                fileInput.value = '';
             }
         }
 
-        // Fungsi removeFile tetap sama
         function removeFile() {
             fileInput.value = ''; 
             inputText.value = '';
             inputText.readOnly = false; 
-            // inputText.placeholder = originalPlaceholder; // Placeholder textarea tidak diubah lagi
             
             if (uploadDocButton && filePreviewInUploadArea && fileNameInUploadArea) {
                 uploadDocButton.classList.remove('hidden');
