@@ -1,13 +1,11 @@
 Flask==3.0.3
 gunicorn==22.0.0
 
-tensorflow==2.19.0            
+tensorflow==2.19.0
 scikit-learn==1.5.1
 imbalanced-learn==0.12.3
 
-transformers==4.49.0
-tokenizers==0.20.1             
-
+transformers==4.39.3
 pandas==2.2.2
 numpy==1.26.4
 seaborn==0.13.2
