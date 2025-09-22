@@ -669,4 +669,4 @@ def classify():
 
 if __name__ == '__main__':
     logger.info("Starting Flask application...")
-    app.run()
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
