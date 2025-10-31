@@ -237,7 +237,7 @@
                 ></textarea>
                 
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 md:gap-0 mt-0 py-4 px-6"> <div class="flex items-center gap-2">
-                        <p id="charCount" class="text-xs md:text-sm text-gray-600">0/10000 karakter</p>
+                        <p id="charCount" class="text-xs md:text-sm text-gray-600">0/2500 karakter</p>
                         <p id="charLimitMessage" class="text-xs md:text-sm text-red-500 font-bold hidden">Karakter melebihi batas!</p>
                     </div>
                     <button id="scanButton" type="submit" class="w-full md:w-auto bg-[#36b5da] text-white rounded-xl px-4 md:px-6 py-2 md:py-3 flex items-center justify-center gap-2 hover:bg-[#2a8bba] transition disabled:opacity-50 disabled:cursor-not-allowed">
@@ -355,7 +355,7 @@
 
         function updateCharacterCount() {
             const charLength = inputText.value.length;
-            charCount.textContent = `${charLength}/10000 karakter`;
+            charCount.textContent = `${charLength}/2500 karakter`;
 
             charLimitMessage.classList.add('hidden');
             charCount.classList.remove('text-red-500', 'font-bold');
@@ -364,11 +364,11 @@
             scanButton.classList.add('hover:bg-[#2a8bba]');
 
 
-            if (charLength > 10000 || charLength === 0) {
+            if (charLength > 2500 || charLength === 0) {
                 scanButton.disabled = true;
                 scanButton.classList.add('opacity-50', 'cursor-not-allowed');
                 scanButton.classList.remove('hover:bg-[#2a8bba]');
-                if (charLength > 10000) {
+                if (charLength > 2500) {
                     charCount.classList.add('text-red-500', 'font-bold');
                     charLimitMessage.classList.remove('hidden');
                 }
@@ -380,7 +380,7 @@
             alertMessage.textContent = message;
             alertBox.classList.remove('translate-x-[120%]', 'md:translate-x-[120%]');
             alertBox.classList.add('translate-x-0', 'md:translate-x-0');
-            setTimeout(closeAlert, 10000);
+            setTimeout(closeAlert, 2500);
         }
 
         function closeAlert() {
@@ -394,9 +394,9 @@
                 showAlert('Peringatan', 'Silakan unggah file atau masukkan teks terlebih dahulu.');
                 return false;
             }
-            if (inputText.value.length > 10000) {
+            if (inputText.value.length > 2500) {
                 event.preventDefault();
-                showAlert('Peringatan', 'Teks melebihi batas 10000 karakter.');
+                showAlert('Peringatan', 'Teks melebihi batas 2500 karakter.');
                 return false;
             }
             return true;
