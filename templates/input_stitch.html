@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AI Detector - Input Screen V2</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #cbd5e1;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white min-h-screen">
+    <div class="flex flex-col lg:flex-row min-h-screen">
+        <!-- Left Hero Section (40%) -->
+        <section
+            class="lg:w-[40%] flex flex-col justify-between p-8 lg:p-16 bg-white dark:bg-background-dark border-r border-[#e2e8f0] dark:border-slate-800">
+            <div class="flex items-center gap-3 mb-12">
+                <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                    <span class="material-symbols-outlined text-2xl">shield_person</span>
+                </div>
+                <h2 class="text-xl font-bold tracking-tight">AI Detector</h2>
+            </div>
+            <div class="max-w-md">
+                <h1 class="text-4xl lg:text-6xl font-bold leading-[1.1] mb-6 tracking-tight">
+                    Is it <span class="text-primary">Human</span> or AI?
+                </h1>
+                <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
+                    Instantly verify the origin of any text with our advanced linguistic analysis engine. Professional
+                    grade detection for academia and enterprise.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <div
+                        class="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                        <span class="material-symbols-outlined text-sm">check_circle</span>
+                        99.8% Accuracy
+                    </div>
+                    <div
+                        class="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                        <span class="material-symbols-outlined text-sm">bolt</span>
+                        Real-time Scan
+                    </div>
+                </div>
+            </div>
+            <div class="mt-16">
+                <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Trusted by leading
+                    institutions</p>
+                <div class="flex items-center gap-8 grayscale opacity-50">
+                    <div class="h-6 w-24 bg-slate-300 rounded" data-alt="University logo placeholder one"></div>
+                    <div class="h-6 w-20 bg-slate-300 rounded" data-alt="Corporate partner logo placeholder two"></div>
+                    <div class="h-6 w-28 bg-slate-300 rounded" data-alt="Tech firm logo placeholder three"></div>
+                </div>
+            </div>
+        </section>
+        <!-- Right Workspace Section (60%) -->
+        <main class="lg:w-[60%] flex flex-col p-6 lg:p-12 bg-background-light dark:bg-background-dark">
+            <form id="analyzeForm" action="/output" method="post"
+                class="flex-1 flex flex-col max-w-4xl w-full mx-auto space-y-6">
+                <!-- Upload Zone -->
+                <div id="dropZone"
+                    class="group relative border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-primary transition-all rounded-xl p-8 bg-white dark:bg-slate-900/50 flex flex-col items-center justify-center text-center cursor-pointer">
+                    <input type="file" id="fileInput" accept=".pdf,.docx,.txt" class="hidden" />
+                    <div id="uploadPrompt">
+                        <div
+                            class="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform mx-auto">
+                            <span class="material-symbols-outlined text-3xl">cloud_upload</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-700 dark:text-slate-200">
+                            Drag and drop your document here, or <span
+                                class="text-primary cursor-pointer hover:underline"
+                                onclick="document.getElementById('fileInput').click()">browse files</span>
+                        </p>
+                        <p class="text-xs text-slate-400 mt-2">Supports PDF, DOCX, TXT (Max 10MB)</p>
+                    </div>
+                    <div id="filePreview" class="hidden flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary text-2xl">description</span>
+                        <span id="fileName" class="text-sm font-medium text-slate-700 dark:text-slate-200"></span>
+                        <button type="button" id="removeFileBtn"
+                            class="ml-2 text-slate-400 hover:text-red-500 transition-colors">
+                            <span class="material-symbols-outlined text-xl">close</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Manual Input Area -->
+                <div
+                    class="flex-1 flex flex-col bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                    <div
+                        class="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-slate-400">subject</span>
+                            <span class="text-sm font-semibold">Manual Text Input</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button type="button"
+                                class="p-1.5 text-slate-400 hover:text-primary transition-colors rounded">
+                                <span class="material-symbols-outlined text-xl">format_size</span>
+                            </button>
+                            <button type="button" id="copyBtn"
+                                class="p-1.5 text-slate-400 hover:text-primary transition-colors rounded">
+                                <span class="material-symbols-outlined text-xl">content_copy</span>
+                            </button>
+                            <div class="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+                            <button type="button" id="clearBtn"
+                                class="text-xs font-bold text-slate-400 hover:text-red-500 transition-colors">CLEAR</button>
+                        </div>
+                    </div>
+                    <textarea id="textInput" name="text_input"
+                        class="flex-1 w-full p-6 text-base lg:text-lg border-0 focus:ring-0 bg-transparent resize-none custom-scrollbar placeholder:text-slate-300 dark:placeholder:text-slate-700"
+                        placeholder="Paste your text here (minimum 50 words)..." rows="8"></textarea>
+                    <div
+                        class="px-6 py-4 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div class="flex items-center gap-6">
+                            <div class="flex flex-col">
+                                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Word
+                                    Count</span>
+                                <span id="wordCount"
+                                    class="text-sm font-mono font-medium text-slate-700 dark:text-slate-300">0 /
+                                    2500</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span
+                                    class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Characters</span>
+                                <span id="charCount"
+                                    class="text-sm font-mono font-medium text-slate-700 dark:text-slate-300">0</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 w-full sm:w-auto">
+                            <button type="button"
+                                class="flex-1 sm:flex-none px-6 py-3 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                                Save Draft
+                            </button>
+                            <button type="submit" id="scanBtn"
+                                class="flex-1 sm:flex-none bg-primary hover:bg-primary/90 text-white px-10 py-3 rounded-lg font-bold shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled>
+                                <span id="scanIcon" class="material-symbols-outlined">analytics</span>
+                                <svg id="scanSpinner" class="hidden animate-spin h-5 w-5 text-white"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                <span id="scanText">Scan Text</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Footer Info -->
+                <div class="flex items-center justify-center gap-6 text-slate-400 py-4">
+                    <div class="flex items-center gap-1.5 text-xs">
+                        <span class="material-symbols-outlined text-sm">lock</span>
+                        Privacy Guaranteed
+                    </div>
+                    <div class="flex items-center gap-1.5 text-xs">
+                        <span class="material-symbols-outlined text-sm">history</span>
+                        No Data Storage
+                    </div>
+                    <div class="flex items-center gap-1.5 text-xs">
+                        <span class="material-symbols-outlined text-sm">verified_user</span>
+                        Enterprise Grade
+                    </div>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Full Page Drop Overlay -->
+    <div id="fullPageDropOverlay" class="hidden fixed inset-0 bg-slate-900/70 z-[9999] items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-slate-800 p-12 rounded-2xl text-center border-2 border-dashed border-primary max-w-lg">
+            <div class="size-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-6">
+                <span class="material-symbols-outlined text-4xl">cloud_upload</span>
+            </div>
+            <p class="text-xl font-bold mb-2">Drop your file here</p>
+            <p class="text-sm text-slate-500">Supports PDF, DOCX, TXT</p>
+        </div>
+    </div>
+
+    <!-- Alert Toast -->
+    <div id="alertToast"
+        class="fixed top-6 right-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl p-4 flex items-center gap-3 z-[10000] transform translate-x-[120%] transition-transform duration-300">
+        <div class="size-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center">
+            <span class="material-symbols-outlined text-lg">warning</span>
+        </div>
+        <div>
+            <p id="alertTitle" class="text-sm font-bold">Warning</p>
+            <p id="alertMsg" class="text-xs text-slate-500">Message</p>
+        </div>
+        <button onclick="closeAlert()" class="ml-2 text-slate-400 hover:text-slate-600">
+            <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // DOM elements
+        const textInput = document.getElementById('textInput');
+        const wordCountEl = document.getElementById('wordCount');
+        const charCountEl = document.getElementById('charCount');
+        const scanBtn = document.getElementById('scanBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const uploadPrompt = document.getElementById('uploadPrompt');
+        const filePreview = document.getElementById('filePreview');
+        const fileNameEl = document.getElementById('fileName');
+        const removeFileBtn = document.getElementById('removeFileBtn');
+        const fullPageDropOverlay = document.getElementById('fullPageDropOverlay');
+        const alertToast = document.getElementById('alertToast');
+        const alertTitle = document.getElementById('alertTitle');
+        const alertMsg = document.getElementById('alertMsg');
+        const form = document.getElementById('analyzeForm');
+
+        let windowDragCounter = 0;
+
+        // --- Counters ---
+        function updateCounters() {
+            const text = textInput.value;
+            const chars = text.length;
+            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+
+            charCountEl.textContent = chars;
+            wordCountEl.textContent = `${chars} / 2500`;
+
+            if (chars > 2500) {
+                wordCountEl.classList.add('text-red-500');
+                scanBtn.disabled = true;
+            } else if (chars === 0) {
+                wordCountEl.classList.remove('text-red-500');
+                scanBtn.disabled = true;
+            } else {
+                wordCountEl.classList.remove('text-red-500');
+                scanBtn.disabled = false;
+            }
+        }
+
+        textInput.addEventListener('input', updateCounters);
+
+        // --- Clear ---
+        clearBtn.addEventListener('click', () => {
+            textInput.value = '';
+            textInput.readOnly = false;
+            removeFileDisplay();
+            updateCounters();
+        });
+
+        // --- Copy ---
+        copyBtn.addEventListener('click', () => {
+            if (textInput.value) {
+                navigator.clipboard.writeText(textInput.value);
+                showAlert('Copied', 'Text copied to clipboard');
+            }
+        });
+
+        // --- Form Validation & Loading ---
+        const scanIcon = document.getElementById('scanIcon');
+        const scanSpinner = document.getElementById('scanSpinner');
+        const scanTextEl = document.getElementById('scanText');
+
+        form.addEventListener('submit', (e) => {
+            if (textInput.value.trim().length === 0) {
+                e.preventDefault();
+                showAlert('Warning', 'Please enter or upload text before scanning.');
+                return;
+            }
+            if (textInput.value.length > 2500) {
+                e.preventDefault();
+                showAlert('Warning', 'Text exceeds the 2500 character limit.');
+                return;
+            }
+            // Show loading state
+            scanBtn.disabled = true;
+            scanIcon.classList.add('hidden');
+            scanSpinner.classList.remove('hidden');
+            scanTextEl.textContent = 'Analyzing...';
+        });
+
+        // --- Alert ---
+        function showAlert(title, message) {
+            alertTitle.textContent = title;
+            alertMsg.textContent = message;
+            alertToast.classList.remove('translate-x-[120%]');
+            alertToast.classList.add('translate-x-0');
+            setTimeout(closeAlert, 3000);
+        }
+
+        function closeAlert() {
+            alertToast.classList.remove('translate-x-0');
+            alertToast.classList.add('translate-x-[120%]');
+        }
+
+        // --- File Upload ---
+        dropZone.addEventListener('click', (e) => {
+            if (e.target.closest('#removeFileBtn')) return;
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files[0]) processFile(e.target.files[0]);
+        });
+
+        removeFileBtn.addEventListener('click', () => {
+            fileInput.value = '';
+            textInput.value = '';
+            textInput.readOnly = false;
+            removeFileDisplay();
+            updateCounters();
+        });
+
+        function showFileDisplay(name) {
+            uploadPrompt.classList.add('hidden');
+            filePreview.classList.remove('hidden');
+            filePreview.classList.add('flex');
+            fileNameEl.textContent = name;
+        }
+
+        function removeFileDisplay() {
+            uploadPrompt.classList.remove('hidden');
+            filePreview.classList.add('hidden');
+            filePreview.classList.remove('flex');
+            fileNameEl.textContent = '';
+        }
+
+        // --- Drag & Drop (full page) ---
+        window.addEventListener('dragenter', (e) => {
+            if (e.dataTransfer && Array.from(e.dataTransfer.types).includes('Files')) {
+                e.preventDefault(); e.stopPropagation();
+                windowDragCounter++;
+                fullPageDropOverlay.classList.remove('hidden');
+                fullPageDropOverlay.classList.add('flex');
+            }
+        }, false);
+
+        window.addEventListener('dragover', (e) => {
+            if (e.dataTransfer && Array.from(e.dataTransfer.types).includes('Files')) {
+                e.preventDefault(); e.stopPropagation();
+            }
+        }, false);
+
+        window.addEventListener('dragleave', (e) => {
+            if (e.dataTransfer && Array.from(e.dataTransfer.types).includes('Files')) {
+                windowDragCounter--;
+                if (windowDragCounter <= 0) {
+                    windowDragCounter = 0;
+                    fullPageDropOverlay.classList.add('hidden');
+                    fullPageDropOverlay.classList.remove('flex');
+                }
+            }
+        }, false);
+
+        window.addEventListener('drop', (e) => {
+            e.preventDefault(); e.stopPropagation();
+            windowDragCounter = 0;
+            fullPageDropOverlay.classList.add('hidden');
+            fullPageDropOverlay.classList.remove('flex');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                processFile(files[0]);
+            }
+        }, false);
+
+        // --- Process File ---
+        async function processFile(file) {
+            if (!file) return;
+            const ext = file.name.split('.').pop().toLowerCase();
+            let text = '';
+
+            try {
+                if (ext === 'pdf') {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        let pageText = '';
+                        let lastY = null;
+                        textContent.items.forEach((item, index) => {
+                            if (lastY !== null && Math.abs(item.transform[5] - lastY) > 5) {
+                                pageText += '\n';
+                            }
+                            pageText += item.str;
+                            if (index < textContent.items.length - 1) {
+                                const nextItem = textContent.items[index + 1];
+                                if (Math.abs(nextItem.transform[5] - item.transform[5]) <= 5) {
+                                    const currentEndX = item.transform[4] + item.width;
+                                    const nextStartX = nextItem.transform[4];
+                                    if (nextStartX - currentEndX > 2) pageText += ' ';
+                                }
+                            }
+                            lastY = item.transform[5];
+                        });
+                        text += pageText + '\n\n';
+                    }
+                } else if (ext === 'docx') {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const result = await mammoth.convertToHtml({ arrayBuffer });
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = result.value
+                        .replace(/<p[^>]*>/gi, '')
+                        .replace(/<\/p>/gi, '\n')
+                        .replace(/<br[^>]*>/gi, '\n')
+                        .replace(/<div[^>]*>/gi, '')
+                        .replace(/<\/div>/gi, '\n')
+                        .replace(/<li[^>]*>/gi, '• ')
+                        .replace(/<\/li>/gi, '\n');
+                    text = (tempDiv.textContent || tempDiv.innerText || '').replace(/\n{3,}/g, '\n\n');
+                } else if (ext === 'txt') {
+                    text = await file.text();
+                } else {
+                    showAlert('Unsupported Format', 'Please use PDF, DOCX, or TXT files.');
+                    fileInput.value = '';
+                    return;
+                }
+
+                textInput.value = text.trim();
+                textInput.readOnly = true;
+                showFileDisplay(file.name);
+                updateCounters();
+
+            } catch (error) {
+                console.error('Error processing file:', error);
+                showAlert('Error', 'An error occurred while processing the file.');
+                fileInput.value = '';
+            }
+        }
+
+        // Initial state
+        updateCounters();
+    </script>
+</body>
+
+</html>

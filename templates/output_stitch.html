@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AI Detection Results - Detailed View V2</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "ai-red": "#ef4444",
+                        "human-green": "#10b981",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #cbd5e1;
+        }
+
+        .donut-chart {
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .donut-inner {
+            background: white;
+            border-radius: 50%;
+            width: 80%;
+            height: 80%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-[#111418] min-h-screen">
+    <!-- Main Layout Container -->
+    <div class="relative flex flex-col w-full min-h-screen">
+        <!-- Top Navigation Bar -->
+        <header
+            class="flex items-center justify-between border-b border-solid border-[#f0f2f4] bg-white px-6 md:px-10 py-3 sticky top-0 z-50">
+            <div class="flex items-center gap-8">
+                <a href="/" class="flex items-center gap-3">
+                    <div class="size-8 bg-primary text-white rounded-lg flex items-center justify-center">
+                        <span class="material-symbols-outlined text-xl">shield_person</span>
+                    </div>
+                    <h2 class="text-lg font-bold leading-tight tracking-tight">AI Detector</h2>
+                </a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="/"
+                    class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold text-sm hover:bg-primary/90 transition-all shadow-md">
+                    <span class="material-symbols-outlined text-lg">arrow_back</span>
+                    New Scan
+                </a>
+            </div>
+        </header>
+        <!-- Main Content -->
+        <main class="flex-1 max-w-[1440px] mx-auto w-full p-4 md:p-8">
+            <!-- Breadcrumbs & Header Actions -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+                <div class="space-y-1">
+                    <div class="flex items-center gap-2 text-[#617589] text-sm">
+                        <a class="hover:text-primary" href="/">Reports</a>
+                        <span class="material-symbols-outlined text-sm">chevron_right</span>
+                        <span class="text-[#111418] font-medium">Analysis Result</span>
+                    </div>
+                    <h1 class="text-3xl font-black tracking-tight mt-2">Detection Analysis</h1>
+                    <p class="text-[#617589] text-sm flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">calendar_today</span>
+                        Scanned just now • {{ results.statistics.total_sentences }} sentences analyzed
+                    </p>
+                </div>
+                <div class="flex gap-3">
+                    <a href="/"
+                        class="flex items-center gap-2 px-4 py-2 bg-white border border-[#f0f2f4] rounded-lg font-bold text-sm hover:shadow-sm transition-all">
+                        <span class="material-symbols-outlined text-lg">refresh</span>
+                        Scan Again
+                    </a>
+                </div>
+            </div>
+            <!-- Dashboard Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Left Column: Source Document (Scrollable) -->
+                <div class="lg:col-span-8 flex flex-col h-[calc(100vh-280px)] min-h-[600px]">
+                    <div
+                        class="bg-white rounded-xl shadow-sm border border-[#f0f2f4] flex flex-col h-full overflow-hidden">
+                        <!-- Card Header -->
+                        <div
+                            class="px-6 py-4 border-b border-[#f0f2f4] flex items-center justify-between bg-white sticky top-0 z-10">
+                            <div class="flex items-center gap-3">
+                                <span class="material-symbols-outlined text-primary">description</span>
+                                <span class="font-bold text-lg">Source Document</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-xs font-bold text-[#617589]">
+                                <span class="size-2 rounded-full bg-ai-red"></span> AI Likelihood
+                                <span class="size-2 rounded-full bg-human-green ml-4"></span> Human Content
+                            </div>
+                        </div>
+                        <!-- Scrollable Content -->
+                        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar bg-slate-50/30">
+                            <article class="max-w-3xl mx-auto prose prose-slate">
+                                {% for sentence in results.sentences %}
+                                <span
+                                    class="{% if sentence.class == 'AI' %}bg-ai-red/10 border-b-2 border-ai-red/30{% else %}bg-human-green/10 border-b-2 border-human-green/30{% endif %} cursor-help inline"
+                                    title="{{ '%.0f' | format(sentence.probability * 100) }}% {{ sentence.class }} Probability">{{
+                                    sentence.sentence }}</span>{{ " " }}
+                                {% endfor %}
+                            </article>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right Column: Results Sidebar -->
+                <div class="lg:col-span-4 flex flex-col gap-6">
+                    <!-- AI Score Card -->
+                    <div class="bg-white rounded-xl shadow-sm border border-[#f0f2f4] p-6 text-center">
+                        <h3 class="font-bold text-sm uppercase tracking-wider text-[#617589] mb-6">Overall AI Score</h3>
+                        <div class="flex justify-center mb-6">
+                            <div class="donut-chart size-48" id="donutChart">
+                                <div class="donut-inner shadow-inner">
+                                    <span class="text-5xl font-black text-[#111418]" id="scoreValue">{{
+                                        results.statistics.ai_percentage | round | int }}%</span>
+                                    <span class="text-sm font-medium mt-1" id="scoreLabel">
+                                        {% if results.statistics.ai_percentage > 60 %}
+                                        <span class="text-ai-red">Highly Likely AI</span>
+                                        {% elif results.statistics.ai_percentage > 40 %}
+                                        <span class="text-amber-500">Mixed Content</span>
+                                        {% else %}
+                                        <span class="text-human-green">Mostly Human</span>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center text-sm border-t border-[#f0f2f4] pt-4 mt-4">
+                            <div class="text-left">
+                                <p class="text-[#617589]">Total Sentences</p>
+                                <p class="font-bold">{{ results.statistics.total_sentences }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[#617589]">Total Paragraphs</p>
+                                <p class="font-bold">{{ results.statistics.total_paragraphs }}</p>
+                            </div>
+                        </div>
+                        <!-- Paragraph classification summary -->
+                        <div class="flex justify-between items-center text-sm border-t border-[#f0f2f4] pt-4 mt-4">
+                            <div class="text-left">
+                                <p class="text-[#617589]">AI Sentences</p>
+                                <p class="font-bold text-ai-red">{{ results.statistics.ai_sentences }}</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-[#617589]">Human Sentences</p>
+                                <p class="font-bold text-human-green">{{ results.statistics.human_sentences }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[#617589]">AI Paragraphs</p>
+                                <p class="font-bold text-ai-red">{{ results.statistics.ai_paragraphs }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Top Sentences Card -->
+                    <div class="bg-white rounded-xl shadow-sm border border-[#f0f2f4] p-6 flex-1">
+                        <h3 class="font-bold text-lg mb-6 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">insights</span>
+                            Key Findings
+                        </h3>
+                        <!-- Top AI Likely -->
+                        {% if results.top_ai %}
+                        <div class="mb-8">
+                            <p class="text-xs font-black uppercase text-ai-red tracking-widest mb-4">Top AI-Likely
+                                Sentences</p>
+                            <div class="space-y-4">
+                                {% for item in results.top_ai %}
+                                <div
+                                    class="pl-4 py-2 border-l-4 border-ai-red bg-ai-red/5 rounded-r-lg group cursor-pointer hover:bg-ai-red/10 transition-all">
+                                    <p class="text-sm leading-snug line-clamp-2">"{{ item.sentence }}"</p>
+                                    <div class="flex items-center justify-between mt-2">
+                                        <span
+                                            class="text-[10px] font-bold text-ai-red px-1.5 py-0.5 bg-ai-red/10 rounded">{{
+                                            '%.0f' | format(item.probability * 100) }}% MATCH</span>
+                                        <span
+                                            class="material-symbols-outlined text-sm text-ai-red opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        <!-- Top Human Likely -->
+                        {% if results.top_human %}
+                        <div>
+                            <p class="text-xs font-black uppercase text-human-green tracking-widest mb-4">Top
+                                Human-Likely Sentences</p>
+                            <div class="space-y-4">
+                                {% for item in results.top_human %}
+                                <div
+                                    class="pl-4 py-2 border-l-4 border-human-green bg-human-green/5 rounded-r-lg group cursor-pointer hover:bg-human-green/10 transition-all">
+                                    <p class="text-sm leading-snug line-clamp-2">"{{ item.sentence }}"</p>
+                                    <div class="flex items-center justify-between mt-2">
+                                        <span
+                                            class="text-[10px] font-bold text-human-green px-1.5 py-0.5 bg-human-green/10 rounded">{{
+                                            '%.0f' | format((1 - item.probability) * 100) }}% HUMAN</span>
+                                        <span
+                                            class="material-symbols-outlined text-sm text-human-green opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <a href="/"
+                                class="w-full mt-8 py-3 border-2 border-dashed border-[#f0f2f4] rounded-xl text-sm font-bold text-[#617589] hover:bg-slate-50 hover:border-primary/30 hover:text-primary transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-lg">replay</span>
+                                Analyze Another Text
+                            </a>
+                        </div>
+                        <!-- Meta Data Card -->
+                        <div class="bg-primary/5 rounded-xl border border-primary/10 p-4">
+                            <div class="flex items-center gap-3 text-primary">
+                                <span class="material-symbols-outlined">verified</span>
+                                <span class="text-sm font-bold">Analysis Engine v2.4</span>
+                            </div>
+                            <p class="text-xs text-primary/70 mt-2 leading-relaxed">
+                                This report was generated using our deep-learning architecture, analyzing both
+                                sentence-level and paragraph-level patterns.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+        </main>
+        <!-- Footer -->
+        <footer class="bg-white border-t border-[#f0f2f4] py-6 px-10">
+            <div class="max-w-[1440px] mx-auto flex items-center justify-center">
+                <p class="text-[#617589] text-sm">© 2025 AI Detector. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Dynamic donut chart color
+        document.addEventListener('DOMContentLoaded', function () {
+            var aiPct = {{ results.statistics.ai_percentage }};
+            var humanPct = {{ results.statistics.human_percentage }};
+            var donut = document.getElementById('donutChart');
+            var aiColor = '#ef4444';
+            var humanColor = '#10b981';
+            donut.style.background = 'conic-gradient(' + aiColor + ' ' + aiPct + '%, ' + humanColor + ' ' + aiPct + '%)';
+        });
+    </script>
+</body>
+
+</html>
