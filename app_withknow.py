@@ -548,22 +548,46 @@ class TextClassifier:
             
             logger.info(f"Paragraph results: {ai_paragraphs} AI, {human_paragraphs} Human")
             
-            # Split text into sentences
-            sentences = self.preprocess_sentence(text)
-            logger.info(f"Split into {len(sentences)} sentences")
+            # Split original text into paragraphs to preserve line breaks
+            original_paragraphs = [p.strip() for p in re.split(r'\n+', text.strip()) if p.strip()]
+            
+            # Build flat lists: original sentences (with case) and lowercase sentences (for model)
+            original_sentences = []
+            lowercase_sentences = []
+            paragraph_start_indices = set()  # track which sentence index starts a new paragraph
+            
+            for para in original_paragraphs:
+                # Mark the start of a new paragraph
+                paragraph_start_indices.add(len(original_sentences))
+                
+                # Split paragraph into sentences (original case)
+                para_sentences = re.findall(r'[^.!?]+[.!?]?', para)
+                para_sentences = [s.strip() for s in para_sentences if s.strip()]
+                original_sentences.extend(para_sentences)
+                
+                # Split paragraph into sentences (lowercase for model)
+                para_lower = para.lower()
+                para_sentences_lower = re.findall(r'[^.!?]+[.!?]?', para_lower)
+                para_sentences_lower = [s.strip() for s in para_sentences_lower if s.strip()]
+                lowercase_sentences.extend(para_sentences_lower)
+            
+            logger.info(f"Split into {len(lowercase_sentences)} sentences across {len(original_paragraphs)} paragraphs")
             
             # Classify each sentence
             sentence_results = []
-            for i, sentence in enumerate(sentences):
+            for i, sentence in enumerate(lowercase_sentences):
                 if sentence.strip():
-                    logger.info(f"Processing sentence {i+1}/{len(sentences)}")
+                    logger.info(f"Processing sentence {i+1}/{len(lowercase_sentences)}")
                     prob, label, features = self.classify_sentence(sentence)
                     if prob is not None:
+                        # Use original-case sentence for display
+                        display_sentence = original_sentences[i] if i < len(original_sentences) else sentence
                         sentence_results.append({
-                            "sentence": sentence,
+                            "sentence": display_sentence,
                             "probability": prob,
                             "class": label,
-                            "features": features
+                            "features": features,
+                            "starts_new_paragraph": i in paragraph_start_indices
                         })
             
             # Calculate sentence statistics
