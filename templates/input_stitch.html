@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>AI Detector - Input Screen V2</title>
+    <title>Cek GPT - Halaman Input</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
         rel="stylesheet" />
@@ -68,32 +68,37 @@
                 <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
                     <span class="material-symbols-outlined text-2xl">shield_person</span>
                 </div>
-                <h2 class="text-xl font-bold tracking-tight">AI Detector</h2>
+                <h2 class="text-xl font-bold tracking-tight">Cek GPT</h2>
             </div>
             <div class="max-w-md">
                 <h1 class="text-4xl lg:text-6xl font-bold leading-[1.1] mb-6 tracking-tight">
-                    Is it <span class="text-primary">Human</span> or AI?
+                    Apakah ini ditulis <span class="text-primary">Manusia</span> atau AI?
                 </h1>
                 <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
-                    Instantly verify the origin of any text with our advanced linguistic analysis engine. Professional
-                    grade detection for academia and enterprise.
+                    Verifikasi asal teks secara instan dengan mesin analisis linguistik canggih. Deteksi
+                    tingkat profesional untuk akademis.
                 </p>
                 <div class="flex flex-wrap gap-4">
                     <div
                         class="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
                         <span class="material-symbols-outlined text-sm">check_circle</span>
-                        99.8% Accuracy
+                        98% Akurasi
                     </div>
                     <div
                         class="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
                         <span class="material-symbols-outlined text-sm">bolt</span>
-                        Real-time Scan
+                        Pemindaian Real-time
+                    </div>
+                    <div
+                        class="flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                        <span class="material-symbols-outlined text-sm">psychology</span>
+                        Prototipe Terkini
                     </div>
                 </div>
             </div>
             <div class="mt-16">
-                <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Trusted by leading
-                    institutions</p>
+                <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Dipercaya oleh
+                    institusi terkemuka</p>
                 <div class="flex items-center gap-8 grayscale opacity-50">
                     <div class="h-6 w-24 bg-slate-300 rounded" data-alt="University logo placeholder one"></div>
                     <div class="h-6 w-20 bg-slate-300 rounded" data-alt="Corporate partner logo placeholder two"></div>
@@ -115,11 +120,11 @@
                             <span class="material-symbols-outlined text-3xl">cloud_upload</span>
                         </div>
                         <p class="text-sm font-medium text-slate-700 dark:text-slate-200">
-                            Drag and drop your document here, or <span
+                            Seret dan lepas dokumen Anda di sini, atau <span
                                 class="text-primary cursor-pointer hover:underline"
-                                onclick="document.getElementById('fileInput').click()">browse files</span>
+                                onclick="document.getElementById('fileInput').click()">pilih file</span>
                         </p>
-                        <p class="text-xs text-slate-400 mt-2">Supports PDF, DOCX, TXT (Max 10MB)</p>
+                        <p class="text-xs text-slate-400 mt-2">Mendukung PDF, DOCX, TXT (Maks 10MB)</p>
                     </div>
                     <div id="filePreview" class="hidden flex items-center gap-3">
                         <span class="material-symbols-outlined text-primary text-2xl">description</span>
@@ -137,7 +142,7 @@
                         class="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800">
                         <div class="flex items-center gap-2">
                             <span class="material-symbols-outlined text-slate-400">subject</span>
-                            <span class="text-sm font-semibold">Manual Text Input</span>
+                            <span class="text-sm font-semibold">Input Teks Manual</span>
                         </div>
                         <div class="flex items-center gap-3">
                             <button type="button"
@@ -150,25 +155,25 @@
                             </button>
                             <div class="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1"></div>
                             <button type="button" id="clearBtn"
-                                class="text-xs font-bold text-slate-400 hover:text-red-500 transition-colors">CLEAR</button>
+                                class="text-xs font-bold text-slate-400 hover:text-red-500 transition-colors">HAPUS</button>
                         </div>
                     </div>
                     <textarea id="textInput" name="text_input"
                         class="flex-1 w-full p-6 text-base lg:text-lg border-0 focus:ring-0 bg-transparent resize-none custom-scrollbar placeholder:text-slate-300 dark:placeholder:text-slate-700"
-                        placeholder="Paste your text here (minimum 50 words)..." rows="8"></textarea>
+                        placeholder="Tempel teks Anda di sini (minimum 50 kata)..." rows="8"></textarea>
                     <div
                         class="px-6 py-4 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4">
                         <div class="flex items-center gap-6">
                             <div class="flex flex-col">
-                                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Word
-                                    Count</span>
+                                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Jumlah
+                                    Kata</span>
                                 <span id="wordCount"
                                     class="text-sm font-mono font-medium text-slate-700 dark:text-slate-300">0 /
                                     2500</span>
                             </div>
                             <div class="flex flex-col">
                                 <span
-                                    class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Characters</span>
+                                    class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Karakter</span>
                                 <span id="charCount"
                                     class="text-sm font-mono font-medium text-slate-700 dark:text-slate-300">0</span>
                             </div>
@@ -176,7 +181,7 @@
                         <div class="flex items-center gap-4 w-full sm:w-auto">
                             <button type="button"
                                 class="flex-1 sm:flex-none px-6 py-3 text-slate-600 dark:text-slate-300 font-bold text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                                Save Draft
+                                Simpan Draf
                             </button>
                             <button type="submit" id="scanBtn"
                                 class="flex-1 sm:flex-none bg-primary hover:bg-primary/90 text-white px-10 py-3 rounded-lg font-bold shadow-lg shadow-primary/20 flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -190,7 +195,7 @@
                                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                                     </path>
                                 </svg>
-                                <span id="scanText">Scan Text</span>
+                                <span id="scanText">Pindai Teks</span>
                             </button>
                         </div>
                     </div>
@@ -199,20 +204,28 @@
                 <div class="flex items-center justify-center gap-6 text-slate-400 py-4">
                     <div class="flex items-center gap-1.5 text-xs">
                         <span class="material-symbols-outlined text-sm">lock</span>
-                        Privacy Guaranteed
+                        Privasi Terjamin
                     </div>
                     <div class="flex items-center gap-1.5 text-xs">
                         <span class="material-symbols-outlined text-sm">history</span>
-                        No Data Storage
+                        Tanpa Penyimpanan Data
                     </div>
                     <div class="flex items-center gap-1.5 text-xs">
                         <span class="material-symbols-outlined text-sm">verified_user</span>
-                        Enterprise Grade
+                        Kualitas Profesional
                     </div>
                 </div>
             </form>
         </main>
     </div>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-background-dark border-t border-[#f0f2f4] dark:border-slate-800 py-6 px-10">
+        <div class="max-w-[1440px] mx-auto flex items-center justify-center">
+            <p class="text-[#617589] text-sm">© 2026 Cek GPT. Hak cipta dilindungi. Build with <span
+                    class="text-red-500">❤️</span> by Harits</p>
+        </div>
+    </footer>
 
     <!-- Full Page Drop Overlay -->
     <div id="fullPageDropOverlay" class="hidden fixed inset-0 bg-slate-900/70 z-[9999] items-center justify-center p-4">
@@ -221,8 +234,8 @@
             <div class="size-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-6">
                 <span class="material-symbols-outlined text-4xl">cloud_upload</span>
             </div>
-            <p class="text-xl font-bold mb-2">Drop your file here</p>
-            <p class="text-sm text-slate-500">Supports PDF, DOCX, TXT</p>
+            <p class="text-xl font-bold mb-2">Lepaskan file Anda di sini</p>
+            <p class="text-sm text-slate-500">Mendukung PDF, DOCX, TXT</p>
         </div>
     </div>
 
@@ -233,8 +246,8 @@
             <span class="material-symbols-outlined text-lg">warning</span>
         </div>
         <div>
-            <p id="alertTitle" class="text-sm font-bold">Warning</p>
-            <p id="alertMsg" class="text-xs text-slate-500">Message</p>
+            <p id="alertTitle" class="text-sm font-bold">Peringatan</p>
+            <p id="alertMsg" class="text-xs text-slate-500">Pesan</p>
         </div>
         <button onclick="closeAlert()" class="ml-2 text-slate-400 hover:text-slate-600">
             <span class="material-symbols-outlined text-lg">close</span>
@@ -302,7 +315,7 @@
         copyBtn.addEventListener('click', () => {
             if (textInput.value) {
                 navigator.clipboard.writeText(textInput.value);
-                showAlert('Copied', 'Text copied to clipboard');
+                showAlert('Disalin', 'Teks berhasil disalin ke clipboard');
             }
         });
 
@@ -314,19 +327,19 @@
         form.addEventListener('submit', (e) => {
             if (textInput.value.trim().length === 0) {
                 e.preventDefault();
-                showAlert('Warning', 'Please enter or upload text before scanning.');
+                showAlert('Peringatan', 'Silakan masukkan atau unggah teks sebelum memindai.');
                 return;
             }
             if (textInput.value.length > 2500) {
                 e.preventDefault();
-                showAlert('Warning', 'Text exceeds the 2500 character limit.');
+                showAlert('Peringatan', 'Teks melebihi batas 2500 karakter.');
                 return;
             }
             // Show loading state
             scanBtn.disabled = true;
             scanIcon.classList.add('hidden');
             scanSpinner.classList.remove('hidden');
-            scanTextEl.textContent = 'Analyzing...';
+            scanTextEl.textContent = 'Menganalisis...';
         });
 
         // --- Alert ---
@@ -463,7 +476,7 @@
                 } else if (ext === 'txt') {
                     text = await file.text();
                 } else {
-                    showAlert('Unsupported Format', 'Please use PDF, DOCX, or TXT files.');
+                    showAlert('Format Tidak Didukung', 'Silakan gunakan file PDF, DOCX, atau TXT.');
                     fileInput.value = '';
                     return;
                 }
@@ -475,7 +488,7 @@
 
             } catch (error) {
                 console.error('Error processing file:', error);
-                showAlert('Error', 'An error occurred while processing the file.');
+                showAlert('Kesalahan', 'Terjadi kesalahan saat memproses file.');
                 fileInput.value = '';
             }
         }

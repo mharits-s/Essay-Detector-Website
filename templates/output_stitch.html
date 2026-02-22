@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>AI Detection Results - Detailed View V2</title>
+    <title>Hasil Deteksi AI - Tampilan Detail V2</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <!-- Google Fonts -->
@@ -93,14 +93,14 @@
                     <div class="size-8 bg-primary text-white rounded-lg flex items-center justify-center">
                         <span class="material-symbols-outlined text-xl">shield_person</span>
                     </div>
-                    <h2 class="text-lg font-bold leading-tight tracking-tight">AI Detector</h2>
+                    <h2 class="text-lg font-bold leading-tight tracking-tight">Detektor AI</h2>
                 </a>
             </div>
             <div class="flex items-center gap-4">
                 <a href="/"
                     class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg font-bold text-sm hover:bg-primary/90 transition-all shadow-md">
                     <span class="material-symbols-outlined text-lg">arrow_back</span>
-                    New Scan
+                    Pindai Baru
                 </a>
             </div>
         </header>
@@ -110,21 +110,21 @@
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
                 <div class="space-y-1">
                     <div class="flex items-center gap-2 text-[#617589] text-sm">
-                        <a class="hover:text-primary" href="/">Reports</a>
+                        <a class="hover:text-primary" href="/">Laporan</a>
                         <span class="material-symbols-outlined text-sm">chevron_right</span>
-                        <span class="text-[#111418] font-medium">Analysis Result</span>
+                        <span class="text-[#111418] font-medium">Hasil Analisis</span>
                     </div>
-                    <h1 class="text-3xl font-black tracking-tight mt-2">Detection Analysis</h1>
+                    <h1 class="text-3xl font-black tracking-tight mt-2">Analisis Deteksi</h1>
                     <p class="text-[#617589] text-sm flex items-center gap-2">
                         <span class="material-symbols-outlined text-sm">calendar_today</span>
-                        Scanned just now • {{ results.statistics.total_sentences }} sentences analyzed
+                        Baru saja dipindai • {{ results.statistics.total_sentences }} kalimat dianalisis
                     </p>
                 </div>
                 <div class="flex gap-3">
                     <a href="/"
                         class="flex items-center gap-2 px-4 py-2 bg-white border border-[#f0f2f4] rounded-lg font-bold text-sm hover:shadow-sm transition-all">
                         <span class="material-symbols-outlined text-lg">refresh</span>
-                        Scan Again
+                        Pindai Ulang
                     </a>
                 </div>
             </div>
@@ -139,11 +139,11 @@
                             class="px-6 py-4 border-b border-[#f0f2f4] flex items-center justify-between bg-white sticky top-0 z-10">
                             <div class="flex items-center gap-3">
                                 <span class="material-symbols-outlined text-primary">description</span>
-                                <span class="font-bold text-lg">Source Document</span>
+                                <span class="font-bold text-lg">Dokumen Sumber</span>
                             </div>
                             <div class="flex items-center gap-2 text-xs font-bold text-[#617589]">
-                                <span class="size-2 rounded-full bg-ai-red"></span> AI Likelihood
-                                <span class="size-2 rounded-full bg-human-green ml-4"></span> Human Content
+                                <span class="size-2 rounded-full bg-ai-red"></span> Kemungkinan AI
+                                <span class="size-2 rounded-full bg-human-green ml-4"></span> Konten Manusia
                             </div>
                         </div>
                         <!-- Scrollable Content -->
@@ -152,7 +152,7 @@
                                 {% for sentence in results.sentences %}
                                 <span
                                     class="{% if sentence.class == 'AI' %}bg-ai-red/10 border-b-2 border-ai-red/30{% else %}bg-human-green/10 border-b-2 border-human-green/30{% endif %} cursor-help inline"
-                                    title="{{ '%.0f' | format(sentence.probability * 100) }}% {{ sentence.class }} Probability">{{
+                                    title="{{ '%.0f' | format(sentence.probability * 100) }}% Probabilitas {{ sentence.class }}">{{
                                     sentence.sentence }}</span>{{ " " }}
                                 {% endfor %}
                             </article>
@@ -163,7 +163,8 @@
                 <div class="lg:col-span-4 flex flex-col gap-6">
                     <!-- AI Score Card -->
                     <div class="bg-white rounded-xl shadow-sm border border-[#f0f2f4] p-6 text-center">
-                        <h3 class="font-bold text-sm uppercase tracking-wider text-[#617589] mb-6">Overall AI Score</h3>
+                        <h3 class="font-bold text-sm uppercase tracking-wider text-[#617589] mb-6">Skor AI Keseluruhan
+                        </h3>
                         <div class="flex justify-center mb-6">
                             <div class="donut-chart size-48" id="donutChart">
                                 <div class="donut-inner shadow-inner">
@@ -171,11 +172,11 @@
                                         results.statistics.ai_percentage | round | int }}%</span>
                                     <span class="text-sm font-medium mt-1" id="scoreLabel">
                                         {% if results.statistics.ai_percentage > 60 %}
-                                        <span class="text-ai-red">Highly Likely AI</span>
+                                        <span class="text-ai-red">Sangat Mungkin AI</span>
                                         {% elif results.statistics.ai_percentage > 40 %}
-                                        <span class="text-amber-500">Mixed Content</span>
+                                        <span class="text-amber-500">Konten Campuran</span>
                                         {% else %}
-                                        <span class="text-human-green">Mostly Human</span>
+                                        <span class="text-human-green">Sebagian Besar Manusia</span>
                                         {% endif %}
                                     </span>
                                 </div>
@@ -183,26 +184,26 @@
                         </div>
                         <div class="flex justify-between items-center text-sm border-t border-[#f0f2f4] pt-4 mt-4">
                             <div class="text-left">
-                                <p class="text-[#617589]">Total Sentences</p>
+                                <p class="text-[#617589]">Total Kalimat</p>
                                 <p class="font-bold">{{ results.statistics.total_sentences }}</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-[#617589]">Total Paragraphs</p>
+                                <p class="text-[#617589]">Total Paragraf</p>
                                 <p class="font-bold">{{ results.statistics.total_paragraphs }}</p>
                             </div>
                         </div>
                         <!-- Paragraph classification summary -->
                         <div class="flex justify-between items-center text-sm border-t border-[#f0f2f4] pt-4 mt-4">
                             <div class="text-left">
-                                <p class="text-[#617589]">AI Sentences</p>
+                                <p class="text-[#617589]">Kalimat AI</p>
                                 <p class="font-bold text-ai-red">{{ results.statistics.ai_sentences }}</p>
                             </div>
                             <div class="text-center">
-                                <p class="text-[#617589]">Human Sentences</p>
+                                <p class="text-[#617589]">Kalimat Manusia</p>
                                 <p class="font-bold text-human-green">{{ results.statistics.human_sentences }}</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-[#617589]">AI Paragraphs</p>
+                                <p class="text-[#617589]">Paragraf AI</p>
                                 <p class="font-bold text-ai-red">{{ results.statistics.ai_paragraphs }}</p>
                             </div>
                         </div>
@@ -211,13 +212,13 @@
                     <div class="bg-white rounded-xl shadow-sm border border-[#f0f2f4] p-6 flex-1">
                         <h3 class="font-bold text-lg mb-6 flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary">insights</span>
-                            Key Findings
+                            Temuan Utama
                         </h3>
                         <!-- Top AI Likely -->
                         {% if results.top_ai %}
                         <div class="mb-8">
-                            <p class="text-xs font-black uppercase text-ai-red tracking-widest mb-4">Top AI-Likely
-                                Sentences</p>
+                            <p class="text-xs font-black uppercase text-ai-red tracking-widest mb-4">Kalimat Paling
+                                Mungkin AI</p>
                             <div class="space-y-4">
                                 {% for item in results.top_ai %}
                                 <div
@@ -238,8 +239,8 @@
                         <!-- Top Human Likely -->
                         {% if results.top_human %}
                         <div>
-                            <p class="text-xs font-black uppercase text-human-green tracking-widest mb-4">Top
-                                Human-Likely Sentences</p>
+                            <p class="text-xs font-black uppercase text-human-green tracking-widest mb-4">Kalimat
+                                Paling Mungkin Manusia</p>
                             <div class="space-y-4">
                                 {% for item in results.top_human %}
                                 <div
@@ -259,18 +260,18 @@
                             <a href="/"
                                 class="w-full mt-8 py-3 border-2 border-dashed border-[#f0f2f4] rounded-xl text-sm font-bold text-[#617589] hover:bg-slate-50 hover:border-primary/30 hover:text-primary transition-all flex items-center justify-center gap-2">
                                 <span class="material-symbols-outlined text-lg">replay</span>
-                                Analyze Another Text
+                                Analisis Teks Lainnya
                             </a>
                         </div>
                         <!-- Meta Data Card -->
                         <div class="bg-primary/5 rounded-xl border border-primary/10 p-4">
                             <div class="flex items-center gap-3 text-primary">
                                 <span class="material-symbols-outlined">verified</span>
-                                <span class="text-sm font-bold">Analysis Engine v2.4</span>
+                                <span class="text-sm font-bold">Cek GPT Model</span>
                             </div>
                             <p class="text-xs text-primary/70 mt-2 leading-relaxed">
-                                This report was generated using our deep-learning architecture, analyzing both
-                                sentence-level and paragraph-level patterns.
+                                Laporan ini dihasilkan menggunakan arsitektur deep-learning kami, menganalisis pola
+                                pada tingkat kalimat dan tingkat paragraf.
                             </p>
                         </div>
                     </div>
@@ -279,7 +280,7 @@
         <!-- Footer -->
         <footer class="bg-white border-t border-[#f0f2f4] py-6 px-10">
             <div class="max-w-[1440px] mx-auto flex items-center justify-center">
-                <p class="text-[#617589] text-sm">© 2025 AI Detector. All rights reserved.</p>
+            <p class="text-[#617589] text-sm">© 2026 Cek GPT. Hak cipta dilindungi. Build with <span class="text-ai-red">❤️</span> by Harits</p>
             </div>
         </footer>
     </div>
